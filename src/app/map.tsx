@@ -5,20 +5,34 @@ import {
   Marker,
 } from "@maplibre/maplibre-react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { MAP_STYLE_URL } from "@/constants/map";
 import { mockHotels } from "@/data/mockHotels";
 import { boundsForHotels, hotelToLngLat } from "@/utils/geo";
 
+const MIN_ZOOM = 3;
+const MAX_ZOOM = 18;
+
 export default function MapScreen() {
   const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
   const cameraRef = useRef<CameraRef>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
+  const [zoom, setZoom] = useState(12);
 
   const selectedHotel = mockHotels.find((hotel) => hotel.id === hotelId);
 
+  const handleZoom = (delta: number) => {
+    const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + delta));
+    cameraRef.current?.zoomTo(nextZoom, { duration: 200 });
+  };
+
   useEffect(() => {
+    if (!isMapReady) {
+      return;
+    }
+
     if (selectedHotel) {
       cameraRef.current?.flyTo({
         center: hotelToLngLat(selectedHotel),
@@ -31,13 +45,20 @@ export default function MapScreen() {
         duration: 1200,
       });
     }
-  }, [selectedHotel]);
+  }, [selectedHotel, isMapReady]);
 
   return (
     <View style={styles.container}>
-      <Map style={styles.map} mapStyle={MAP_STYLE_URL}>
+      <Map
+        style={styles.map}
+        mapStyle={MAP_STYLE_URL}
+        onDidFinishLoadingMap={() => setIsMapReady(true)}
+        onRegionDidChange={(event) => setZoom(event.nativeEvent.zoom)}
+      >
         <Camera
           ref={cameraRef}
+          minZoom={MIN_ZOOM}
+          maxZoom={MAX_ZOOM}
           initialViewState={{
             bounds: boundsForHotels(mockHotels),
             padding: { top: 60, right: 60, bottom: 60, left: 60 },
@@ -56,6 +77,23 @@ export default function MapScreen() {
           </Marker>
         ))}
       </Map>
+      <View style={styles.zoomControls}>
+        <Pressable
+          style={styles.zoomButton}
+          onPress={() => handleZoom(1)}
+          hitSlop={8}
+        >
+          <Text style={styles.zoomButtonLabel}>+</Text>
+        </Pressable>
+        <View style={styles.zoomButtonDivider} />
+        <Pressable
+          style={styles.zoomButton}
+          onPress={() => handleZoom(-1)}
+          hitSlop={8}
+        >
+          <Text style={styles.zoomButtonLabel}>−</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -84,5 +122,33 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700",
     fontSize: 13,
+  },
+  zoomControls: {
+    position: "absolute",
+    right: 16,
+    bottom: 40,
+    backgroundColor: "white",
+    borderRadius: 8,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  zoomButton: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  zoomButtonDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "#ccc",
+  },
+  zoomButtonLabel: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#222",
   },
 });
