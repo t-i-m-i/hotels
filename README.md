@@ -7,6 +7,8 @@ to geolocation to (eventually) a real backend.
 **What it does:** browse a list of hotels, tap one to fly to it on the map,
 and (planned) find hotels near your current location or search by city.
 
+![App demo](docs/media/demo.gif)
+
 ## Why this project
 
 This is a hands-on sample of my mobile development work — a real,
