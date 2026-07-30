@@ -24,7 +24,7 @@ decisions documented as they're made (see `plan.md` and `docs/`).
   iOS) bottom tab bar and a search tab.
 - **MapLibre GL** — open-source, vector-tile maps (via
   [OpenFreeMap](https://openfreemap.org/)) — no paid API keys required.
-- **[`hotels-api`](../hotels-api)** (a sibling repo) — a NestJS backend
+- **[`hotels-api`](https://github.com/t-i-m-i/hotels-api)** (a sibling repo) — a NestJS backend
   with an OpenAPI-documented REST API. Currently serves mocked hotel data
   (no database or auth wired up yet — see that repo's README for the
   reasoning).
