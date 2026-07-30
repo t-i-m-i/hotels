@@ -1,8 +1,15 @@
 import { Link } from "expo-router";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-import { mockHotels } from "@/data/mockHotels";
-import type { Hotel } from "@/types/hotel";
+import type { Hotel } from "@/api/hotels";
+import { useHotels } from "@/api/hooks/useHotels";
 
 function HotelListItem({ hotel }: { hotel: Hotel }) {
   return (
@@ -20,10 +27,28 @@ function HotelListItem({ hotel }: { hotel: Hotel }) {
 }
 
 export default function Index() {
+  const { data: hotels, isLoading, isError } = useHotels();
+
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (isError || !hotels) {
+    return (
+      <View style={styles.center}>
+        <Text>Couldn&apos;t load hotels.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={mockHotels}
+        data={hotels}
         keyExtractor={(hotel) => hotel.id}
         renderItem={({ item }) => <HotelListItem hotel={item} />}
         contentContainerStyle={styles.list}
@@ -42,6 +67,11 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   list: {
     padding: 16,

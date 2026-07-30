@@ -1,10 +1,29 @@
 import { Stack, useLocalSearchParams } from "expo-router";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+
+import { useHotels } from "@/api/hooks/useHotels";
 import HotelMap from "@/components/HotelMap";
-import { mockHotels } from "@/data/mockHotels";
 
 export default function HotelScreen() {
   const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
-  const hotel = mockHotels.find((h) => h.id === hotelId);
+  const { data: hotels, isLoading, isError } = useHotels();
+  const hotel = hotels?.find((h) => h.id === hotelId);
+
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (isError || !hotels) {
+    return (
+      <View style={styles.center}>
+        <Text>Couldn&apos;t load hotel.</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -14,7 +33,15 @@ export default function HotelScreen() {
           headerBackButtonDisplayMode: "minimal",
         }}
       />
-      <HotelMap selectedHotelId={hotelId} />
+      <HotelMap hotels={hotels} selectedHotelId={hotelId} />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

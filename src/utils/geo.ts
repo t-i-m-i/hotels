@@ -1,4 +1,4 @@
-import type { Hotel } from "@/types/hotel";
+import type { Hotel } from "@/api/hotels";
 
 export function hotelToLngLat(hotel: Hotel): [number, number] {
   return [hotel.geo.longitude, hotel.geo.latitude];

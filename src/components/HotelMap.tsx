@@ -7,21 +7,21 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import type { Hotel } from "@/api/hotels";
 import { MAP_STYLE_URL } from "@/constants/map";
-import { mockHotels } from "@/data/mockHotels";
 import { boundsForHotels, hotelToLngLat } from "@/utils/geo";
 
 const MIN_ZOOM = 3;
 const MAX_ZOOM = 18;
 
 export default function HotelMap({
+  hotels,
   selectedHotelId,
 }: {
+  hotels: Hotel[];
   selectedHotelId?: string;
 }) {
-  const selectedHotel = mockHotels.find(
-    (hotel) => hotel.id === selectedHotelId,
-  );
+  const selectedHotel = hotels.find((hotel) => hotel.id === selectedHotelId);
 
   const cameraRef = useRef<CameraRef>(null);
   const [isMapReady, setIsMapReady] = useState(false);
@@ -44,12 +44,12 @@ export default function HotelMap({
         duration: 1200,
       });
     } else {
-      cameraRef.current?.fitBounds(boundsForHotels(mockHotels), {
+      cameraRef.current?.fitBounds(boundsForHotels(hotels), {
         padding: { top: 60, right: 60, bottom: 60, left: 60 },
         duration: 1200,
       });
     }
-  }, [selectedHotel, isMapReady]);
+  }, [selectedHotel, isMapReady, hotels]);
 
   return (
     <View style={styles.container}>
@@ -64,11 +64,11 @@ export default function HotelMap({
           minZoom={MIN_ZOOM}
           maxZoom={MAX_ZOOM}
           initialViewState={{
-            bounds: boundsForHotels(mockHotels),
+            bounds: boundsForHotels(hotels),
             padding: { top: 60, right: 60, bottom: 60, left: 60 },
           }}
         />
-        {mockHotels.map((hotel) => (
+        {hotels.map((hotel) => (
           <Marker key={hotel.id} lngLat={hotelToLngLat(hotel)}>
             <View
               style={[
