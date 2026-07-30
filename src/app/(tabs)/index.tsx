@@ -5,8 +5,8 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { Hotel } from "@/api/hotels";
 import { useHotels } from "@/api/hooks/useHotels";
@@ -31,22 +31,22 @@ export default function Index() {
 
   if (isLoading) {
     return (
-      <View style={styles.center}>
+      <SafeAreaView style={styles.center} edges={["top"]}>
         <ActivityIndicator />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (isError || !hotels) {
     return (
-      <View style={styles.center}>
+      <SafeAreaView style={styles.center} edges={["top"]}>
         <Text>Couldn&apos;t load hotels.</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <FlatList
         data={hotels}
         keyExtractor={(hotel) => hotel.id}
@@ -60,7 +60,7 @@ export default function Index() {
           </Link>
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
