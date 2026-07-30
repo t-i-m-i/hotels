@@ -38,7 +38,7 @@ design decisions.
 
 ## About me
 
-Hi, I'm Tymoteusz. 
+Hi, I'm Tymoteusz.
 I'm a full-stack developer working across frontend, backend, and user experience.
 I build native mobile apps, backend APIs, and work with databases.
 I'm looking for an opportunity to keep growing as a software engineer.
