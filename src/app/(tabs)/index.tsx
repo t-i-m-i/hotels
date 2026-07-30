@@ -6,7 +6,10 @@ import type { Hotel } from "@/types/hotel";
 
 function HotelListItem({ hotel }: { hotel: Hotel }) {
   return (
-    <Link href={{ pathname: "/map", params: { hotelId: hotel.id } }} asChild>
+    <Link
+      href={{ pathname: "/hotel/[hotelId]", params: { hotelId: hotel.id } }}
+      asChild
+    >
       <Pressable style={styles.card}>
         <Text style={styles.name}>{hotel.name}</Text>
         <Text style={styles.location}>{hotel.location}</Text>

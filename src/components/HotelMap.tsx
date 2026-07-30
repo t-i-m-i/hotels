@@ -4,7 +4,6 @@ import {
   Map,
   Marker,
 } from "@maplibre/maplibre-react-native";
-import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -15,13 +14,18 @@ import { boundsForHotels, hotelToLngLat } from "@/utils/geo";
 const MIN_ZOOM = 3;
 const MAX_ZOOM = 18;
 
-export default function MapScreen() {
-  const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
+export default function HotelMap({
+  selectedHotelId,
+}: {
+  selectedHotelId?: string;
+}) {
+  const selectedHotel = mockHotels.find(
+    (hotel) => hotel.id === selectedHotelId,
+  );
+
   const cameraRef = useRef<CameraRef>(null);
   const [isMapReady, setIsMapReady] = useState(false);
   const [zoom, setZoom] = useState(12);
-
-  const selectedHotel = mockHotels.find((hotel) => hotel.id === hotelId);
 
   const handleZoom = (delta: number) => {
     const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + delta));
