@@ -41,7 +41,7 @@ decisions documented as they're made (see `plan.md` and `docs/`).
 ## Project status
 
 Actively in progress. Current phase: hotel list, map, and a native tab bar
-(Explore / Map / My Bookings / Search), all backed by a real NestJS API. 
+(Explore / Map / My Bookings / Search), all backed by a real NestJS API.
 Next up: "find hotels near me" and
 city search on the client. See `plan.md` for the full roadmap and
 `docs/logs/` for a running log of design decisions.
