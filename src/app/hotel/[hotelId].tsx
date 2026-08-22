@@ -41,7 +41,7 @@ export default function HotelScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.flexView}>
       <Stack.Screen
         options={{
           title: hotel?.name ?? "Hotel Details",
@@ -83,6 +83,9 @@ export default function HotelScreen() {
 }
 
 const styles = StyleSheet.create({
+  flexView: {
+    flex: 1,
+  },
   center: {
     flex: 1,
     alignItems: "center",
