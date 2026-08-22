@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, StyleSheet } from "react-native";
 import { useHotels } from "@/api/hooks/useHotels";
 import HotelList from "@/components/HotelList";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -34,8 +34,13 @@ export default function SearchIndex() {
           placeholder="Search"
           onChangeText={(e) => setInputText(e.nativeEvent.text)}
         />
-        <SafeAreaView style={styles.center} edges={["top"]}>
-          <Text>Start typing to search hotels.</Text>
+        <SafeAreaView style={styles.container} edges={["top"]}>
+          <KeyboardAvoidingView
+            style={styles.center}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            <Text>Start typing to search hotels.</Text>
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </>
     );
@@ -60,6 +65,9 @@ export default function SearchIndex() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   center: {
     flex: 1,
     alignItems: "center",
