@@ -2,7 +2,7 @@
 
 A mobile app for discovering hotels on an interactive map, built as a
 portfolio project to demonstrate mobile app development end-to-end — from UI
-to geolocation to (eventually) a real backend.
+to geolocation.
 
 **What it does:** browse a list of hotels, tap one to fly to it on the map,
 and (planned) find hotels near your current location or search by city.
@@ -41,10 +41,8 @@ decisions documented as they're made (see `plan.md` and `docs/`).
 ## Project status
 
 Actively in progress. Current phase: hotel list, map, and a native tab bar
-(Explore / Map / My Bookings / Search), all backed by a real NestJS API
-over HTTP instead of a local array — though that API still serves mocked
-data with no database or auth behind it yet. Next up: wiring `hotels-api`
-to a real PostgreSQL + PostGIS database, then "find hotels near me" and
+(Explore / Map / My Bookings / Search), all backed by a real NestJS API. 
+Next up: "find hotels near me" and
 city search on the client. See `plan.md` for the full roadmap and
 `docs/logs/` for a running log of design decisions.
 
