@@ -10,19 +10,27 @@ import {
   Text,
   View,
 } from "react-native";
-import { Calendar } from "react-native-calendars";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useCurrentBookingsByHotel } from "@/api/hooks/useBookings";
 import { useHotels } from "@/api/hooks/useHotels";
+import useDateRangeSelection from "@/hooks/useDateRangeSelection";
+import HotelBookingSheet from "@/components/HotelBookingSheet";
+import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
 
 export default function HotelScreen() {
   const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
   const { data: hotels, isLoading, isError } = useHotels();
+  const { data: bookings } = useCurrentBookingsByHotel(hotelId);
   const hotel = hotels?.find((h) => h.id === hotelId);
 
   const insets = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const { markedDates, selectedRange, handleDayPress } = useDateRangeSelection({
+    bookings,
+  });
 
   if (isLoading) {
     return (
@@ -32,7 +40,7 @@ export default function HotelScreen() {
     );
   }
 
-  if (isError || !hotels) {
+  if (isError || !hotels || !hotel) {
     return (
       <View style={styles.center}>
         <Text>Couldn&apos;t load hotel.</Text>
@@ -56,28 +64,27 @@ export default function HotelScreen() {
           <HotelMap hotels={hotels} selectedHotelId={hotelId} />
         </View>
 
-        <Pressable
-          style={styles.selectDatesButton}
-          onPress={() => bottomSheetRef.current?.expand()}
-        >
-          <Text>Select dates</Text>
-        </Pressable>
+        <HotelDetails
+          hotel={hotel}
+          bottomSheetRef={bottomSheetRef}
+          selectedRange={selectedRange}
+        />
       </ScrollView>
+
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
-        <Pressable onPress={() => {}}>
+        <Pressable
+          disabled={!selectedRange.start || !selectedRange.end}
+          onPress={() => {}}
+        >
           <Text>Book</Text>
         </Pressable>
       </View>
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={["60%"]}
-        enableDynamicSizing={false}
-        enablePanDownToClose
-      >
-        <Calendar />
-      </BottomSheet>
+      <HotelBookingSheet
+        bottomSheetRef={bottomSheetRef}
+        markedDates={markedDates}
+        onDayPress={handleDayPress}
+      />
     </View>
   );
 }
@@ -85,6 +92,8 @@ export default function HotelScreen() {
 const styles = StyleSheet.create({
   flexView: {
     flex: 1,
+    // borderWidth: 1,
+    // borderColor: "tomato",
   },
   center: {
     flex: 1,
@@ -93,21 +102,18 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: "tomato",
+    // borderWidth: 1,
+    // borderColor: "tomato",
   },
   contentContainer: {
-    borderWidth: 2,
-    borderColor: "hotpink",
+    // borderWidth: 2,
+    // borderColor: "hotpink",
   },
   mapContainer: {
     height: Dimensions.get("window").height * 0.35,
   },
-  selectDatesButton: {
-    padding: 16,
-  },
   bottomBar: {
-    borderWidth: 1,
-    borderColor: "lime",
+    // borderWidth: 1,
+    // borderColor: "lime",
   },
 });
