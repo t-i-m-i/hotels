@@ -77,5 +77,7 @@ export default function useDateRangeSelection({
     );
   };
 
-  return { markedDates, selectedRange, handleDayPress };
+  const resetSelection = () => setSelectedRange({});
+
+  return { markedDates, selectedRange, handleDayPress, resetSelection };
 }

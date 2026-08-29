@@ -12,12 +12,17 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useCurrentBookingsByHotel } from "@/api/hooks/useBookings";
+import {
+  bookingKeys,
+  useCurrentBookingsByHotel,
+} from "@/api/hooks/useBookings";
 import { useHotels } from "@/api/hooks/useHotels";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
+import { submitBooking } from "@/api/bookings";
 
 export default function HotelScreen() {
   const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
@@ -27,10 +32,40 @@ export default function HotelScreen() {
 
   const insets = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const queryClient = useQueryClient();
 
-  const { markedDates, selectedRange, handleDayPress } = useDateRangeSelection({
-    bookings,
+  const { markedDates, selectedRange, handleDayPress, resetSelection } =
+    useDateRangeSelection({ bookings });
+
+  const {
+    mutate: book,
+    isPending: isBooking,
+    isSuccess: isBooked,
+    error: bookingError,
+  } = useMutation({
+    mutationFn: submitBooking,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: bookingKeys.currentByHotel(hotelId),
+      });
+      resetSelection();
+      bottomSheetRef.current?.close();
+    },
+    onError: (error) => {
+      console.error(error.message);
+    },
   });
+
+  const handleBooking = () => {
+    if (!hotel || !selectedRange.start || !selectedRange.end) {
+      return;
+    }
+    book({
+      hotelId: hotel.id,
+      checkIn: selectedRange.start,
+      checkOut: selectedRange.end,
+    });
+  };
 
   if (isLoading) {
     return (
@@ -72,11 +107,13 @@ export default function HotelScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
+        {isBooked && <Text>Booking confirmed!</Text>}
+        {bookingError && <Text>{bookingError.message}</Text>}
         <Pressable
-          disabled={!selectedRange.start || !selectedRange.end}
-          onPress={() => {}}
+          disabled={!selectedRange.start || !selectedRange.end || isBooking}
+          onPress={handleBooking}
         >
-          <Text>Book</Text>
+          <Text>{isBooking ? "Booking…" : "Book"}</Text>
         </Pressable>
       </View>
 
