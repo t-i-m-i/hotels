@@ -2,8 +2,12 @@ import type { BookingDetails } from "@/api/bookings";
 import { colors } from "@/constants/colors";
 import { StyleSheet, Text, View } from "react-native";
 
+// checkOut is a bare "YYYY-MM-DD" calendar day; today is built the same way
+// from local Date getters and compared lexically, never routed through
+// toISOString() - see docs/logs/ for the UTC-vs-local bug that caused.
 function isPastBooking(checkOut: string): boolean {
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   return checkOut < today;
 }
 
