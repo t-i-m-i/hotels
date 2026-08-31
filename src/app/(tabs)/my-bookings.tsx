@@ -30,9 +30,6 @@ export default function MyBookings() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <View>
-        <Text>My Bookings</Text>
-      </View>
       <FlatList
         data={bookings}
         keyExtractor={(item) => item.id}
