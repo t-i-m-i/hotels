@@ -112,8 +112,16 @@ export default function HotelScreen() {
         <Pressable
           disabled={!selectedRange.start || !selectedRange.end || isBooking}
           onPress={handleBooking}
+          style={({ pressed }) => [
+            styles.bookButton,
+            (!selectedRange.start || !selectedRange.end || isBooking) &&
+              styles.bookButtonDisabled,
+            pressed && styles.bookButtonPressed,
+          ]}
         >
-          <Text>{isBooking ? "Booking…" : "Book"}</Text>
+          <Text style={styles.bookButtonText}>
+            {isBooking ? "Booking…" : "Book"}
+          </Text>
         </Pressable>
       </View>
 
@@ -150,7 +158,28 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height * 0.35,
   },
   bottomBar: {
-    // borderWidth: 1,
-    // borderColor: "lime",
+    padding: 16,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "#D1D1D6",
+    backgroundColor: "#FFFFFF",
+    gap: 8,
+  },
+  bookButton: {
+    backgroundColor: "#007AFF",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bookButtonPressed: {
+    backgroundColor: "#0062CC",
+  },
+  bookButtonDisabled: {
+    backgroundColor: "#B0D2FF",
+  },
+  bookButtonText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "600",
   },
 });
