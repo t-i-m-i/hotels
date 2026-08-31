@@ -8,8 +8,10 @@ const SELECTED_RANGE_COLOR = "#0a84ff";
 
 export default function useDateRangeSelection({
   bookings,
+  onRangeComplete,
 }: {
   bookings?: Booking[];
+  onRangeComplete?: () => void;
 }) {
   const [selectedRange, setSelectedRange] = useState<SelectedRange>({});
 
@@ -72,9 +74,13 @@ export default function useDateRangeSelection({
     const spansBookedDate = getDatesInRange(start, dateString).some((date) =>
       bookedDates.has(date),
     );
-    setSelectedRange(
-      spansBookedDate ? { start: dateString } : { start, end: dateString },
-    );
+    if (spansBookedDate) {
+      setSelectedRange({ start: dateString });
+      return;
+    }
+
+    setSelectedRange({ start, end: dateString });
+    onRangeComplete?.();
   };
 
   const resetSelection = () => setSelectedRange({});

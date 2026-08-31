@@ -35,7 +35,10 @@ export default function HotelScreen() {
   const queryClient = useQueryClient();
 
   const { markedDates, selectedRange, handleDayPress, resetSelection } =
-    useDateRangeSelection({ bookings });
+    useDateRangeSelection({
+      bookings,
+      onRangeComplete: () => bottomSheetRef.current?.close(),
+    });
 
   const {
     mutate: book,
