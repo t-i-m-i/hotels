@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { Hotel } from "@/api/hotels";
+import { colors } from "@/constants/colors";
 import { MAP_STYLE_URL } from "@/constants/map";
 import { boundsForHotels, hotelToLngLat } from "@/utils/geo";
 
@@ -113,14 +114,14 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#208AEF",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
     borderColor: "white",
   },
   pinSelected: {
-    backgroundColor: "#E0432B",
+    backgroundColor: colors.accent,
   },
   pinLabel: {
     color: "white",
@@ -153,6 +154,6 @@ const styles = StyleSheet.create({
   zoomButtonLabel: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#222",
+    color: colors.primary,
   },
 });

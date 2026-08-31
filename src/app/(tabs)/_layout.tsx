@@ -1,8 +1,10 @@
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 
+import { colors } from "@/constants/colors";
+
 export default function RootLayout() {
   return (
-    <NativeTabs>
+    <NativeTabs iconColor={{ selected: colors.primary }}>
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon

@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "@/constants/colors";
 import HotelListItem from "./HotelListItem";
 
 type HotelListProps = {
@@ -70,11 +71,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: "#208AEF",
+    backgroundColor: colors.primary,
     alignItems: "center",
   },
   mapLinkText: {
-    color: "white",
+    color: colors.onPrimary,
     fontWeight: "600",
     fontSize: 15,
   },

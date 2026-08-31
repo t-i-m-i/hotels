@@ -1,10 +1,11 @@
 import { Booking } from "@/api/bookings";
+import { colors } from "@/constants/colors";
 import { getDatesInRange } from "@/utils/dateRange";
 import { useMemo, useState } from "react";
 import { DateData, MarkedDates } from "react-native-calendars/src/types";
 
 export type SelectedRange = { start?: string; end?: string };
-const SELECTED_RANGE_COLOR = "#0a84ff";
+const SELECTED_RANGE_COLOR = colors.primary;
 
 export default function useDateRangeSelection({
   bookings,

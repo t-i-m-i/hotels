@@ -17,6 +17,7 @@ import {
   useCurrentBookingsByHotel,
 } from "@/api/hooks/useBookings";
 import { useHotels } from "@/api/hooks/useHotels";
+import { colors } from "@/constants/colors";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
@@ -103,8 +104,12 @@ export default function HotelScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
-        {isBooked && <Text>Booking confirmed!</Text>}
-        {bookingError && <Text>{bookingError.message}</Text>}
+        {isBooked && (
+          <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
+        )}
+        {bookingError && (
+          <Text style={styles.bookingErrorText}>{bookingError.message}</Text>
+        )}
         <Pressable
           disabled={!selectedRange.start || !selectedRange.end || isBooking}
           onPress={handleBooking}
@@ -161,21 +166,29 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   bookButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
   },
   bookButtonPressed: {
-    backgroundColor: "#0062CC",
+    backgroundColor: colors.primaryPressed,
   },
   bookButtonDisabled: {
-    backgroundColor: "#B0D2FF",
+    backgroundColor: colors.primaryDisabled,
   },
   bookButtonText: {
-    color: "#FFFFFF",
+    color: colors.onPrimary,
     fontSize: 17,
+    fontWeight: "600",
+  },
+  bookingConfirmedText: {
+    color: colors.accent,
+    fontWeight: "600",
+  },
+  bookingErrorText: {
+    color: colors.primary,
     fontWeight: "600",
   },
 });

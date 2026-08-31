@@ -1,4 +1,5 @@
 import { Hotel } from "@/api/hotels";
+import { colors } from "@/constants/colors";
 import { SelectedRange } from "@/hooks/useDateRangeSelection";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -71,6 +72,6 @@ const styles = StyleSheet.create({
   selectDatesText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#007AFF",
+    color: colors.primary,
   },
 });
