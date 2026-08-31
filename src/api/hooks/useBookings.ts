@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getCurrentBookingsByHotel } from "@/api/bookings";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCurrentBookingsByHotel, submitBooking } from "@/api/bookings";
 
 export const bookingKeys = {
   currentByHotel: (hotelId: string | undefined) =>
@@ -11,5 +11,20 @@ export function useCurrentBookingsByHotel(hotelId: string | undefined) {
     queryKey: bookingKeys.currentByHotel(hotelId),
     queryFn: () => getCurrentBookingsByHotel(hotelId as string),
     enabled: !!hotelId,
+  });
+}
+
+export function useCreateBooking(hotelId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: submitBooking,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: bookingKeys.currentByHotel(hotelId),
+      });
+    },
+    onError: (error) => {
+      console.error(error.message);
+    },
   });
 }
