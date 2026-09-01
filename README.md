@@ -8,7 +8,14 @@ to geolocation.
 search by name or location, and book a stay (with a My Bookings tab), and
 (planned) find hotels near your current location.
 
-![App demo](docs/media/demo.gif)
+<video
+  src="https://github.com/user-attachments/assets/19dc83d6-8dda-4b36-923a-f9beb7385714"
+  controls
+  muted
+  playsinline
+  width="332"
+  height="720">
+</video>
 
 ## Why this project
 
