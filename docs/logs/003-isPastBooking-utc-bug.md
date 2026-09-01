@@ -1,4 +1,4 @@
-# 003 — `isPastBooking` UTC-vs-local bug in `BookingListItem`
+# 003 — `toISOString()` UTC-vs-local bugs in `BookingListItem` and `HotelBookingSheet`
 
 ## The bug
 
@@ -38,23 +38,62 @@ day**, direction and length depending on the device's UTC offset:
 
 Build `today` from local `Date` getters instead of `toISOString()`, and
 compare `YYYY-MM-DD` strings lexically (lexical order matches chronological
-order for that format), same fix already applied on the web side:
+order for that format), same fix already applied on the web side. Extracted
+as a shared helper since the same fragile logic was about to appear twice:
 
 ```ts
-function isPastBooking(checkOut: string): boolean {
-  const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  return checkOut < today;
+// src/utils/dateRange.ts
+export function getLocalDateString(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 ```
+
+`BookingListItem.tsx` now calls `checkOut < getLocalDateString()`.
+
+## A second occurrence, found by grepping for `toISOString()`
+
+Grepping both client repos and `hotels-api` for other `toISOString()` uses
+after fixing the above turned up a second live instance of the identical
+bug, in `HotelBookingSheet.tsx`:
+
+```ts
+minDate={new Date().toISOString().slice(0, 10)}
+```
+
+Same mechanism, different symptom: this feeds the check-in calendar's
+`minDate`, so instead of mis-dimming a list item it mis-computes which
+dates are selectable as check-in.
+
+- **Positive offset (e.g. `UTC+2`):** for ~2 hours after local midnight,
+  `minDate` resolves to *yesterday* — the calendar lets the guest select a
+  check-in date that's already passed locally.
+- **Negative offset (e.g. `UTC-8`):** for hours before local midnight,
+  `minDate` resolves to *tomorrow* — the guest can't select today as
+  check-in even though it's still today on their device.
+
+Fixed the same way: `minDate={getLocalDateString()}`.
+
+A third `toISOString()` hit, in `src/utils/dateRange.ts`'s
+`getDatesInRange`, was checked and is **not** a bug — it parses dates via
+`Date.UTC(...)`, increments via `setUTCDate`, and formats via
+`toISOString()`, so every step stays in UTC space consistently. The bug
+pattern specifically requires mixing a real instant (`new Date()`, tied to
+the device's local wall-clock) with a UTC-only render step; a function
+that never touches the local clock at all has no such asymmetry to trip
+over.
 
 ## Worth remembering
 
 Any `.toISOString()` (or other UTC-flavored conversion) touching a value
 that's meant to represent a bare calendar day — no time-of-day, no zone —
 is a signal to stop and check whether "which day" is being silently
-conflated with "which instant." This is now the third place this exact
-mistake has shown up across the two client repos and the backend
-(`hotels-api`'s `assertCheckInNotInPast`/`toBookingDto`, `hotels-web-next`'s
-`isPastBooking`, and this one) — worth grepping for `toISOString()` next
-time a date-only value is touched anywhere in this stack.
+conflated with "which instant." This is now the fourth occurrence of this
+exact mistake across the two client repos and the backend
+(`hotels-api`'s `assertCheckInNotInPast`/`toBookingDto`,
+`hotels-web-next`'s `isPastBooking`, and this file's `isPastBooking` and
+`HotelBookingSheet`'s `minDate`) — grep for `toISOString()` first, every
+time, whenever a date-only value is touched anywhere in this stack, rather
+than trusting the specific call site looks safe.

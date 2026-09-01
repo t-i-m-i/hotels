@@ -1,4 +1,5 @@
 import BottomSheet from "@gorhom/bottom-sheet";
+import { getLocalDateString } from "@/utils/dateRange";
 import { Calendar, DateData } from "react-native-calendars";
 import { MarkedDates } from "react-native-calendars/src/types";
 
@@ -20,7 +21,7 @@ export default function HotelBookingSheet({
       enablePanDownToClose
     >
       <Calendar
-        minDate={new Date().toISOString().slice(0, 10)}
+        minDate={getLocalDateString()}
         markingType="period"
         markedDates={markedDates}
         onDayPress={onDayPress}
