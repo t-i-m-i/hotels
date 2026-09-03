@@ -1,5 +1,5 @@
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useRef } from "react";
 import {
   ActivityIndicator,
@@ -28,20 +28,25 @@ export default function HotelScreen() {
   const { data: hotels, isLoading, isError } = useHotels();
   const { data: bookings } = useCurrentBookingsByHotel(hotelId);
   const hotel = hotels?.find((h) => h.id === hotelId);
+  const router = useRouter();
 
   const insets = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const { markedDates, selectedRange, handleDayPress, resetSelection } =
-    useDateRangeSelection({
-      bookings,
-      onRangeComplete: () => bottomSheetRef.current?.close(),
-    });
+  const {
+    markedDates,
+    selectedRange,
+    handleDayPress,
+    // resetSelection
+  } = useDateRangeSelection({
+    bookings,
+    onRangeComplete: () => bottomSheetRef.current?.close(),
+  });
 
   const {
     mutate: book,
     isPending: isBooking,
-    isSuccess: isBooked,
+    // isSuccess: isBooked,
     error: bookingError,
   } = useCreateBooking(hotelId);
 
@@ -56,9 +61,13 @@ export default function HotelScreen() {
         checkOut: selectedRange.end,
       },
       {
-        onSuccess: () => {
-          resetSelection();
+        onSuccess: (data) => {
+          // resetSelection(); // used if we do not redirect but display success message. keep for now.
           bottomSheetRef.current?.close();
+          router.push({
+            pathname: "/my-bookings",
+            params: { newBookingId: data.id },
+          });
         },
       },
     );
@@ -104,9 +113,9 @@ export default function HotelScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
-        {isBooked && (
+        {/*{isBooked && (
           <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
-        )}
+        )}*/}
         {bookingError && (
           <Text style={styles.bookingErrorText}>{bookingError.message}</Text>
         )}

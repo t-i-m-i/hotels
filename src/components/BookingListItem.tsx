@@ -9,13 +9,24 @@ function isPastBooking(checkOut: string): boolean {
 
 export function BookingListItem({
   bookingDetails,
+  newBookingId,
 }: {
   bookingDetails: BookingDetails;
+  newBookingId: string | undefined;
 }) {
   const isPast = isPastBooking(bookingDetails.checkOut);
 
   return (
-    <View style={[styles.card, isPast && styles.cardPast]}>
+    <View
+      style={[
+        styles.card,
+        isPast && styles.cardPast,
+        newBookingId === bookingDetails.id && styles.cardNew,
+      ]}
+    >
+      {newBookingId === bookingDetails.id && (
+        <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
+      )}
       <Text style={[styles.hotelName, isPast && styles.textPast]}>
         {bookingDetails.hotel.name}
       </Text>
@@ -39,6 +50,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
     borderColor: "#E5E5EA",
   },
+  cardNew: {
+    borderColor: colors.accent,
+    borderWidth: 2,
+  },
   hotelName: {
     fontSize: 17,
     fontWeight: "600",
@@ -50,5 +65,9 @@ const styles = StyleSheet.create({
   },
   textPast: {
     color: "#9A9A9E",
+  },
+  bookingConfirmedText: {
+    color: colors.accent,
+    fontWeight: "600",
   },
 });

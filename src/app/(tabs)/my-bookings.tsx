@@ -1,5 +1,6 @@
 import { useMyBookings } from "@/api/hooks/useBookings";
 import { BookingListItem } from "@/components/BookingListItem";
+import { useLocalSearchParams } from "expo-router";
 import {
   Text,
   View,
@@ -11,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyBookings() {
   const { data: bookings, isLoading, isError } = useMyBookings();
+  const { newBookingId } = useLocalSearchParams<{ newBookingId?: string }>();
 
   if (isLoading) {
     return (
@@ -34,7 +36,9 @@ export default function MyBookings() {
         data={bookings}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
-        renderItem={({ item }) => <BookingListItem bookingDetails={item} />}
+        renderItem={({ item }) => (
+          <BookingListItem bookingDetails={item} newBookingId={newBookingId} />
+        )}
         ListEmptyComponent={
           isLoading ? (
             <ActivityIndicator style={styles.emptyState} />
