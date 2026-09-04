@@ -1,9 +1,14 @@
 # End-to-end booking happy path, run locally against the iOS simulator.
 #
 # Prerequisites:
-#   - hotels-api running at http://localhost:3000 with the demo seed data.
-#   - A dev build installed on a booted simulator: `bun run ios` (keep Metro
-#     running on :8081).
+#   - hotels-api running at http://localhost:3000 with the demo seed data,
+#     and migrated far enough to have bookings.is_synthetic (see hotels-api
+#     migrations/..._add-is-synthetic-to-bookings.sql).
+#   - A dev build installed on a booted simulator (`bun run ios` once), then
+#     Metro serving the bundle with the e2e flag baked in:
+#     `EXPO_PUBLIC_E2E_TEST_MODE=true bun start` on :8081. Without that env
+#     var the app won't tag its booking as synthetic, and cleanup-booking.js
+#     won't find anything to delete.
 #   - Maestro CLI + idb-companion installed (see docs/logs/004-testing-setup.md).
 #
 # Run: `bun run test:e2e`  (or `maestro test .maestro/booking-flow.yaml`)
@@ -79,8 +84,7 @@ env:
 - assertVisible: "Booking confirmed!"
 - assertVisible: ".*${SEARCH}.*"
 
-# This just created a real booking in the shared demo database — delete
-# it so repeat runs don't pile up reservations on the hotel this flow
-# keeps targeting (also matters for hotels-web-next's Playwright suite,
-# which books the same next-month 10-13 range on the same search term).
+# This just created a real booking in the shared demo database, tagged
+# synthetic by the app itself (EXPO_PUBLIC_E2E_TEST_MODE, see client.ts) —
+# sweep it up via the backend's bulk-delete-synthetic endpoint.
 - runScript: cleanup-booking.js

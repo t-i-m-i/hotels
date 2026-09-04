@@ -1,21 +1,9 @@
-// Deletes the booking this flow just created against the shared demo
-// database. Maestro has no direct handle on the id (the UI never shows
-// it), so this finds it the same way a human would: the booking on a
-// hotel matching SEARCH with exactly the check-in/check-out dates
-// compute-dates.js picked for this run, then calls the backend's own
-// DELETE /bookings/:id (see hotels-api's BookingsController) to remove
-// it. Runs after the confirmation assertions so a failed cleanup here
-// never masks a real assertion failure earlier in the flow.
-const response = http.get(`${API_URL}/bookings`);
-const bookings = JSON.parse(response.body);
-
-const booking = bookings.find(
-  (b) =>
-    b.hotel.name.includes(SEARCH) &&
-    b.checkIn === output.checkIn &&
-    b.checkOut === output.checkOut,
-);
-
-if (booking) {
-  http.delete(`${API_URL}/bookings/${booking.id}`);
-}
+// Deletes every booking this run (or any prior interrupted run) tagged as
+// synthetic, via hotels-api's DELETE /bookings/synthetic. The tag itself is
+// set by the app, not by this script — src/api/client.ts adds the
+// `X-Synthetic-Booking: true` header to every request whenever the JS
+// bundle was served with EXPO_PUBLIC_E2E_TEST_MODE=true (see this repo's
+// README/docs/logs/005-... for how to start Metro that way). No matching
+// on hotel name or dates needed: the row is unambiguous, and a bulk delete
+// also sweeps up anything a previous crashed run left behind.
+http.delete(`${API_URL}/bookings/synthetic`);
