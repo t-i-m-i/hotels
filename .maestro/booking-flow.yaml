@@ -14,6 +14,7 @@ appId: com.t-i-m-i.hotels
 name: Book a hotel end-to-end
 env:
   SEARCH: "Barcelona"
+  API_URL: "http://localhost:3000"
 ---
 # No `clearState`: on iOS that's implemented as a full uninstall/reinstall
 # (see docs/logs/004-testing-setup.md), which wipes expo-dev-menu's "seen
@@ -77,3 +78,9 @@ env:
 # Redirected to My Bookings with the new booking highlighted.
 - assertVisible: "Booking confirmed!"
 - assertVisible: ".*${SEARCH}.*"
+
+# This just created a real booking in the shared demo database — delete
+# it so repeat runs don't pile up reservations on the hotel this flow
+# keeps targeting (also matters for hotels-web-next's Playwright suite,
+# which books the same next-month 10-13 range on the same search term).
+- runScript: cleanup-booking.js
