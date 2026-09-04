@@ -22,6 +22,7 @@ import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
+import { scheduleBookingConfirmedNotification } from "@/utils/notifications";
 
 export default function HotelScreen() {
   const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
@@ -64,6 +65,7 @@ export default function HotelScreen() {
         onSuccess: (data) => {
           // resetSelection(); // used if we do not redirect but display success message. keep for now.
           bottomSheetRef.current?.close();
+          scheduleBookingConfirmedNotification();
           router.push({
             pathname: "/my-bookings",
             params: { newBookingId: data.id },
