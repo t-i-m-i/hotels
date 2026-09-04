@@ -27,6 +27,7 @@ export async function ensureNotificationPermissionsAsync(): Promise<boolean> {
  * Schedules a local notification confirming the booking, arriving a minute
  * later to simulate the host confirming it. Demo-only stand-in for a real
  * "host confirmed" push that would come from the backend.
+ * see: docs/guides/notifications.md
  */
 export async function scheduleBookingConfirmedNotification() {
   const hasPermission = await ensureNotificationPermissionsAsync();
