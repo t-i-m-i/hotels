@@ -1,0 +1,79 @@
+# End-to-end booking happy path, run locally against the iOS simulator.
+#
+# Prerequisites:
+#   - hotels-api running at http://localhost:3000 with the demo seed data.
+#   - A dev build installed on a booted simulator: `bun run ios` (keep Metro
+#     running on :8081).
+#   - Maestro CLI + idb-companion installed (see docs/logs/004-testing-setup.md).
+#
+# Run: `bun run test:e2e`  (or `maestro test .maestro/booking-flow.yaml`)
+#
+# SEARCH matches on hotel name OR location, so a city name works. Adjust it
+# if your seed data differs.
+appId: com.t-i-m-i.hotels
+name: Book a hotel end-to-end
+env:
+  SEARCH: "Barcelona"
+---
+# No `clearState`: on iOS that's implemented as a full uninstall/reinstall
+# (see docs/logs/004-testing-setup.md), which wipes expo-dev-menu's "seen
+# the dev menu" flag and brings back its one-time onboarding popover on
+# every run. A plain launch still cold-restarts the app (fresh route stack,
+# fresh in-memory state) which is all this flow needs - nothing we assert
+# on depends on persisted local app data.
+- launchApp
+
+# expo-dev-client boots to its launcher menu; deep-link straight to the
+# Metro bundle. For a physical device, swap localhost for your Mac's LAN IP.
+- openLink:
+    link: "hotels://expo-development-client/?url=http://localhost:8081"
+
+# Defensive: dismiss expo-dev-menu's onboarding popover if it shows (e.g.
+# on a genuinely fresh install) - it otherwise covers the hotel list below.
+- runFlow:
+    when:
+      visible: "This is the developer menu"
+    commands:
+      - tapOn: "Continue"
+
+- assertVisible:
+    id: "hotel-card"
+
+# Explore -> Search. The search field is the pill in the bottom tab bar
+# (iOS `role="search"` native tab); tapping it focuses the field.
+- tapOn:
+    id: "magnifyingglass"
+- tapOn:
+    point: "50%,95%"
+- inputText: "${SEARCH}"
+- assertVisible:
+    id: "hotel-card"
+
+# Open the first result.
+- tapOn:
+    id: "hotel-card"
+    index: 0
+
+# Hotel detail -> open the calendar bottom sheet.
+- tapOn:
+    id: "select-dates-button"
+- assertVisible:
+    id: "booking-calendar"
+
+# Pick check-in / check-out on the 10th and 13th of next month. The sheet
+# auto-closes once the range is complete.
+- runScript: compute-dates.js
+- tapOn:
+    id: "booking-calendar.header.rightArrow"
+- tapOn:
+    id: "booking-calendar.day_${output.checkIn}"
+- tapOn:
+    id: "booking-calendar.day_${output.checkOut}"
+
+# Confirm the booking.
+- tapOn:
+    id: "book-button"
+
+# Redirected to My Bookings with the new booking highlighted.
+- assertVisible: "Booking confirmed!"
+- assertVisible: ".*${SEARCH}.*"

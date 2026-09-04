@@ -8,7 +8,7 @@ export default function HotelListItem({ hotel }: { hotel: Hotel }) {
       href={{ pathname: "/hotel/[hotelId]", params: { hotelId: hotel.id } }}
       asChild
     >
-      <Pressable style={styles.card}>
+      <Pressable style={styles.card} testID="hotel-card">
         <Text style={styles.name}>{hotel.name}</Text>
         <Text style={styles.location}>{hotel.location}</Text>
         <Text style={styles.description}>{hotel.description}</Text>

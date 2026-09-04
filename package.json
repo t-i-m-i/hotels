@@ -34,12 +34,17 @@
     "react-native-worklets": "0.10.0"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.0.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.0",
     "eslint-config-prettier": "^10.1.8",
+    "jest": "~29.7.0",
+    "jest-expo": "~57.0.5",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.6",
+    "react-test-renderer": "19.2.3",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -51,7 +56,20 @@
     "lint": "expo lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:e2e": "maestro test .maestro",
     "generate:api-types": "openapi-typescript ../hotels-api/docs/openapi.json -o src/api/generated/schema.d.ts"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "moduleNameMapper": {
+      "^@/assets/(.*)$": "<rootDir>/assets/$1",
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|react-native-calendars|@gorhom/.*|react-native-reanimated))"
+    ]
   },
   "private": true
 }

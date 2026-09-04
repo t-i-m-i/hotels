@@ -21,6 +21,7 @@ export default function HotelBookingSheet({
       enablePanDownToClose
     >
       <Calendar
+        testID="booking-calendar"
         minDate={getLocalDateString()}
         markingType="period"
         markedDates={markedDates}

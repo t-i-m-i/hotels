@@ -120,6 +120,7 @@ export default function HotelScreen() {
           <Text style={styles.bookingErrorText}>{bookingError.message}</Text>
         )}
         <Pressable
+          testID="book-button"
           disabled={!selectedRange.start || !selectedRange.end || isBooking}
           onPress={handleBooking}
           style={({ pressed }) => [

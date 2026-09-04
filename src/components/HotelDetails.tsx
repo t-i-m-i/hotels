@@ -20,6 +20,7 @@ export default function HotelDetails({
       <Text style={styles.description}>{hotel.description}</Text>
 
       <Pressable
+        testID="select-dates-button"
         style={({ pressed }) => [
           styles.selectDatesButton,
           pressed && styles.selectDatesButtonPressed,
