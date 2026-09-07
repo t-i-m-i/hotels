@@ -1,10 +1,10 @@
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import { useHotels } from "@/api/hooks/useHotels";
+import { useAllHotels } from "@/api/hooks/useHotels";
 import HotelMap from "@/components/HotelMap";
 
 export default function MapScreen() {
-  const { data: hotels, isLoading, isError } = useHotels();
+  const { hotels, isLoading, isError } = useAllHotels();
 
   if (isLoading) {
     return (

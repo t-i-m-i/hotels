@@ -4,26 +4,19 @@ import type { components } from "@/api/generated/schema";
 export type Hotel = components["schemas"]["HotelDto"];
 export type PaginatedHotels = components["schemas"]["PaginatedHotelsDto"];
 
-export async function getHotels(search?: string): Promise<Hotel[]> {
-  const { data, error } = await apiClient.GET("/hotels", {
-    params: { query: { search } },
-  });
-  if (error) {
-    throw error;
-  }
-  return data;
-}
-
-export async function getHotelsPaginated(
-  page: number,
+export async function getHotels(
+  search?: string,
+  page?: number,
+  pageSize?: number,
 ): Promise<PaginatedHotels> {
-  const { data, error } = await apiClient.GET("/hotels/paginated", {
-    params: { query: { page } },
+  const { data, error } = await apiClient.GET("/hotels", {
+    params: { query: { search, page, pageSize } },
   });
-  if (error) {
-    throw error;
+  if (error || !data) {
+    throw error ?? new Error("Failed to load hotels");
   }
-  await new Promise((r) => setTimeout(r, 1000));
+  // uncomment if need to test
+  // await new Promise((r) => setTimeout(r, 1000));
   return data;
 }
 

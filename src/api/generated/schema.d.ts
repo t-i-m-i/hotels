@@ -20,22 +20,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/hotels/paginated": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["HotelsController_findAllPaginated"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/hotels/{id}": {
         parameters: {
             query?: never;
@@ -153,7 +137,7 @@ export interface components {
             location: string;
             geo: components["schemas"]["GeoDto"];
         };
-        PaginationMetaDto: {
+        PaginationDto: {
             /** @example 1 */
             page: number;
             /** @example 20 */
@@ -164,7 +148,7 @@ export interface components {
             total: number;
         };
         HotelsMetaDto: {
-            pagination: components["schemas"]["PaginationMetaDto"];
+            pagination: components["schemas"]["PaginationDto"];
         };
         PaginatedHotelsDto: {
             data: components["schemas"]["HotelDto"][];
@@ -233,28 +217,10 @@ export interface operations {
             query?: {
                 /** @description Case-insensitive filter matched against name and location */
                 search?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HotelDto"][];
-                };
-            };
-        };
-    };
-    HotelsController_findAllPaginated: {
-        parameters: {
-            query?: {
                 /** @description Page number */
                 page?: number;
+                /** @description Page size */
+                pageSize?: number;
             };
             header?: never;
             path?: never;

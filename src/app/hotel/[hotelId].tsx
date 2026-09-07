@@ -16,7 +16,7 @@ import {
   useCreateBooking,
   useCurrentBookingsByHotel,
 } from "@/api/hooks/useBookings";
-import { useHotels } from "@/api/hooks/useHotels";
+import { useHotel } from "@/api/hooks/useHotels";
 import { colors } from "@/constants/colors";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
@@ -26,9 +26,8 @@ import { scheduleBookingConfirmedNotification } from "@/utils/notifications";
 
 export default function HotelScreen() {
   const { hotelId } = useLocalSearchParams<{ hotelId?: string }>();
-  const { data: hotels, isLoading, isError } = useHotels();
+  const { data: hotel, isLoading, isError } = useHotel(hotelId);
   const { data: bookings } = useCurrentBookingsByHotel(hotelId);
-  const hotel = hotels?.find((h) => h.id === hotelId);
   const router = useRouter();
 
   const insets = useSafeAreaInsets();
@@ -83,7 +82,7 @@ export default function HotelScreen() {
     );
   }
 
-  if (isError || !hotels || !hotel) {
+  if (isError || !hotel) {
     return (
       <View style={styles.center}>
         <Text>Couldn&apos;t load hotel.</Text>
@@ -104,7 +103,7 @@ export default function HotelScreen() {
         contentContainerStyle={styles.contentContainer}
       >
         <View style={styles.mapContainer}>
-          <HotelMap hotels={hotels} selectedHotelId={hotelId} />
+          <HotelMap hotels={[hotel]} selectedHotelId={hotelId} />
         </View>
 
         <HotelDetails

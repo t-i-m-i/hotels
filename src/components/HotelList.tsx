@@ -10,11 +10,15 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "@/constants/colors";
 import HotelListItem from "./HotelListItem";
+import { useCallback } from "react";
 
-type HotelListProps = {
+type HotelListPaginatedProps = {
   hotels: Hotel[] | undefined;
   isLoading: boolean;
   isError: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => void;
+  hasNextPage: boolean;
   showMapLink?: boolean;
 };
 
@@ -22,14 +26,32 @@ export default function HotelList({
   hotels,
   isLoading,
   isError,
+  isFetchingNextPage,
+  fetchNextPage,
+  hasNextPage,
   showMapLink = true,
-}: HotelListProps) {
+}: HotelListPaginatedProps) {
+  const loadMore = useCallback(async () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Hotel }) => <HotelListItem hotel={item} />,
+    [],
+  );
+
+  const keyExtractor = useCallback((hotel: Hotel) => hotel.id, []);
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <FlatList
         data={hotels ?? []}
-        keyExtractor={(hotel) => hotel.id}
-        renderItem={({ item }) => <HotelListItem hotel={item} />}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        onEndReachedThreshold={0.5}
+        onEndReached={loadMore}
         contentContainerStyle={styles.list}
         ListHeaderComponent={
           showMapLink ? (
@@ -49,6 +71,11 @@ export default function HotelList({
             </Text>
           )
         }
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <ActivityIndicator style={styles.footerSpinner} />
+          ) : null
+        }
       />
     </SafeAreaView>
   );
@@ -66,6 +93,9 @@ const styles = StyleSheet.create({
   emptyState: {
     marginTop: 40,
     textAlign: "center",
+  },
+  footerSpinner: {
+    paddingVertical: 16,
   },
   mapLink: {
     marginBottom: 4,
