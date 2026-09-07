@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/hotels/paginated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HotelsController_findAllPaginated"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/hotels/{id}": {
         parameters: {
             query?: never;
@@ -137,6 +153,23 @@ export interface components {
             location: string;
             geo: components["schemas"]["GeoDto"];
         };
+        PaginationMetaDto: {
+            /** @example 1 */
+            page: number;
+            /** @example 20 */
+            pageSize: number;
+            /** @example 5 */
+            pageCount: number;
+            /** @example 87 */
+            total: number;
+        };
+        HotelsMetaDto: {
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        PaginatedHotelsDto: {
+            data: components["schemas"]["HotelDto"][];
+            meta: components["schemas"]["HotelsMetaDto"];
+        };
         CreateBookingDto: {
             /** @example 38dca5bd-0417-4971-baee-056e1aa3ce21 */
             hotelId: string;
@@ -213,6 +246,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HotelDto"][];
+                };
+            };
+        };
+    };
+    HotelsController_findAllPaginated: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedHotelsDto"];
                 };
             };
         };
