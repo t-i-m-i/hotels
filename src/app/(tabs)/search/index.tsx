@@ -20,8 +20,11 @@ export default function SearchIndex() {
   const trimmedSearch = debouncedSearch.trim();
   const hasSearchQuery = trimmedSearch.length > 0;
   const {
-    data: hotels,
+    hotels,
     isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
     isError,
   } = useHotels(trimmedSearch, { enabled: hasSearchQuery });
 
@@ -57,8 +60,10 @@ export default function SearchIndex() {
       <HotelList
         hotels={hotels}
         isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
         isError={isError}
-        showMapLink={false}
       />
     </>
   );

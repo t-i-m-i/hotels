@@ -45,6 +45,13 @@ documented as they're made (see `plan.md` and `docs/`).
 - Planned: geolocation ("find hotels near me") and geospatial queries via
   **PostGIS** behind `hotels-api`, plus authentication (see `plan.md`).
 
+## Running it locally
+
+```bash
+bun run generate:api-types
+bun run start
+```
+
 ## Project status
 
 Actively in progress. Current phase: hotel list, map, search, and hotel
@@ -55,11 +62,11 @@ via geolocation + PostGIS. See `plan.md` for the full roadmap and
 
 ## Testing
 
-| Command | What it does |
-|---|---|
-| `bun run test` | Unit tests (Jest + `jest-expo` preset + `@testing-library/react-native`). |
-| `bun run test:watch` | Unit tests in watch mode. |
-| `bun run test:e2e` | Maestro happy-path e2e (`.maestro/booking-flow.yaml`): search, open a hotel, book a date range, confirm on My Bookings. |
+| Command              | What it does                                                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `bun run test`       | Unit tests (Jest + `jest-expo` preset + `@testing-library/react-native`).                                               |
+| `bun run test:watch` | Unit tests in watch mode.                                                                                               |
+| `bun run test:e2e`   | Maestro happy-path e2e (`.maestro/booking-flow.yaml`): search, open a hotel, book a date range, confirm on My Bookings. |
 
 `test:e2e` needs, in order: `hotels-api` running locally with the demo seed data, a dev build installed
 on a booted simulator (`bun run ios`, once), and Maestro + idb-companion installed — see

@@ -137,6 +137,23 @@ export interface components {
             location: string;
             geo: components["schemas"]["GeoDto"];
         };
+        PaginationDto: {
+            /** @example 1 */
+            page: number;
+            /** @example 20 */
+            pageSize: number;
+            /** @example 5 */
+            pageCount: number;
+            /** @example 87 */
+            total: number;
+        };
+        HotelsMetaDto: {
+            pagination: components["schemas"]["PaginationDto"];
+        };
+        PaginatedHotelsDto: {
+            data: components["schemas"]["HotelDto"][];
+            meta: components["schemas"]["HotelsMetaDto"];
+        };
         CreateBookingDto: {
             /** @example 38dca5bd-0417-4971-baee-056e1aa3ce21 */
             hotelId: string;
@@ -200,6 +217,10 @@ export interface operations {
             query?: {
                 /** @description Case-insensitive filter matched against name and location */
                 search?: string;
+                /** @description Page number */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
             };
             header?: never;
             path?: never;
@@ -212,7 +233,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HotelDto"][];
+                    "application/json": components["schemas"]["PaginatedHotelsDto"];
                 };
             };
         };
