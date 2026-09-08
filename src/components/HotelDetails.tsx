@@ -3,6 +3,7 @@ import { colors } from "@/constants/colors";
 import { SelectedRange } from "@/hooks/useDateRangeSelection";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import ImagesSlider from "./ImagesSlider";
 
 export default function HotelDetails({
   hotel,
@@ -14,28 +15,33 @@ export default function HotelDetails({
   selectedRange: SelectedRange;
 }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.name}>{hotel.name}</Text>
-      <Text style={styles.location}>{hotel.location}</Text>
-      <Text style={styles.description}>{hotel.description}</Text>
+    <>
+      <View style={styles.container}>
+        <Text style={styles.name}>{hotel.name}</Text>
+        <Text style={styles.location}>{hotel.location}</Text>
+        <Text style={styles.description}>{hotel.description}</Text>
 
-      <Pressable
-        testID="select-dates-button"
-        style={({ pressed }) => [
-          styles.selectDatesButton,
-          pressed && styles.selectDatesButtonPressed,
-        ]}
-        onPress={() => bottomSheetRef.current?.expand()}
-      >
-        <Text style={styles.selectDatesText}>
-          {selectedRange.start && selectedRange.end
-            ? `${selectedRange.start} – ${selectedRange.end}`
-            : selectedRange.start
-              ? `${selectedRange.start} – select checkout`
-              : "Select dates"}
-        </Text>
-      </Pressable>
-    </View>
+        <Pressable
+          testID="select-dates-button"
+          style={({ pressed }) => [
+            styles.selectDatesButton,
+            pressed && styles.selectDatesButtonPressed,
+          ]}
+          onPress={() => bottomSheetRef.current?.expand()}
+        >
+          <Text style={styles.selectDatesText}>
+            {selectedRange.start && selectedRange.end
+              ? `${selectedRange.start} – ${selectedRange.end}`
+              : selectedRange.start
+                ? `${selectedRange.start} – select checkout`
+                : "Select dates"}
+          </Text>
+        </Pressable>
+      </View>
+      <View style={styles.gallery}>
+        <ImagesSlider />
+      </View>
+    </>
   );
 }
 
@@ -74,5 +80,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     color: colors.primary,
+  },
+  gallery: {
+    height: 400,
   },
 });
