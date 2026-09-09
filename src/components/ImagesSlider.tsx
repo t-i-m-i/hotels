@@ -9,24 +9,15 @@ import Animated, {
 } from "react-native-reanimated";
 import { useState } from "react";
 import { scheduleOnRN } from "react-native-worklets";
-
-const images = [
-  "http://localhost:3000/static/images/paolo-nicolello-2gOxKj594nM-unsplash.jpg",
-  "http://localhost:3000/static/images/jeffrey-francisco-_Ei9f33bQ1A-unsplash.jpg",
-  "http://localhost:3000/static/images/sasha-kaunas-TAgGZWz6Qg8-unsplash.jpg",
-  "http://localhost:3000/static/images/francesca-saraco-_dS27XGgRyQ-unsplash.jpg",
-  "http://localhost:3000/static/images/cory-bjork-D1yT791Nf9A-unsplash.jpg",
-  "http://localhost:3000/static/images/brett-campbell-k1OlQaEK2qI-unsplash.jpg",
-  "http://localhost:3000/static/images/vojtech-bruzek-Yrxr3bsPdS0-unsplash.jpg",
-  "http://localhost:3000/static/images/frames-for-your-heart-FqqiAvJejto-unsplash.jpg",
-];
+import type { HotelImage } from "@/api/hotels";
+import { storageAsset } from "@/api/storage";
 
 const { width } = Dimensions.get("screen");
 const _itemSize = width * 0.24;
 const _spacing = 12;
 const _itemTotalSize = _itemSize + _spacing;
 
-export default function ImagesSlider() {
+export default function ImagesSlider({ images }: { images: HotelImage[] }) {
   const scrollX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const onScroll = useAnimatedScrollHandler((e) => {
@@ -40,6 +31,11 @@ export default function ImagesSlider() {
       scheduleOnRN(setActiveIndex, newActiveIndex);
     }
   });
+
+  if (!images.length) return null;
+
+  const activeImage = images[activeIndex];
+
   return (
     <View
       style={{
@@ -53,17 +49,19 @@ export default function ImagesSlider() {
           entering={FadeIn.duration(500)}
           exiting={FadeOut.duration(500)}
           key={`image-${activeIndex}`}
-          source={{ uri: images[activeIndex] }}
+          source={{ uri: storageAsset(activeImage.path) }}
+          accessibilityLabel={activeImage.alt}
           style={{ flex: 1 }}
         />
       </View>
       <Animated.FlatList
         data={images}
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item) => item.path}
         renderItem={({ item, index }) => {
           return (
             <CarouselItem
-              imageUri={item}
+              imageUri={storageAsset(item.path)}
+              alt={item.alt}
               index={index}
               itemSize={_itemSize}
               scrollX={scrollX}

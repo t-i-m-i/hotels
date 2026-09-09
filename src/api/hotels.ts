@@ -2,6 +2,7 @@ import { apiClient } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 export type Hotel = components["schemas"]["HotelDto"];
+export type HotelImage = components["schemas"]["HotelImageDto"];
 export type PaginatedHotels = components["schemas"]["PaginatedHotelsDto"];
 
 export async function getHotels(

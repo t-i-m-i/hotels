@@ -126,6 +126,25 @@ export interface components {
             /** @example 2.1734 */
             longitude: number;
         };
+        HotelImageDto: {
+            /**
+             * @description Storage key, relative to the configured storage/CDN base URL. The client resolves it as `${STORAGE_URL}/${path}`.
+             * @example hotels/shared/01.jpg
+             */
+            path: string;
+            /** @example Hotel Barcino Central — photo 1 */
+            alt: string;
+            /**
+             * @description Intrinsic width in pixels.
+             * @example 1600
+             */
+            width: number;
+            /**
+             * @description Intrinsic height in pixels.
+             * @example 1067
+             */
+            height: number;
+        };
         HotelDto: {
             /** @example 1 */
             id: string;
@@ -136,6 +155,8 @@ export interface components {
             /** @example Barcelona, Spain */
             location: string;
             geo: components["schemas"]["GeoDto"];
+            /** @description Gallery images for the hotel, in display order. First entry is the cover. */
+            images: components["schemas"]["HotelImageDto"][];
         };
         PaginationDto: {
             /** @example 1 */

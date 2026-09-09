@@ -8,11 +8,13 @@ import Animated, {
 
 export default function CarouselItem({
   imageUri,
+  alt,
   index,
   itemSize,
   scrollX,
 }: {
   imageUri: string;
+  alt: string;
   index: number;
   itemSize: number;
   scrollX: SharedValue<number>;
@@ -49,6 +51,7 @@ export default function CarouselItem({
     >
       <Image
         source={{ uri: imageUri }}
+        accessibilityLabel={alt}
         style={{
           flex: 1,
           borderRadius: itemSize / 2,

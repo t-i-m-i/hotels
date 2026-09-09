@@ -39,7 +39,7 @@ export default function HotelDetails({
         </Pressable>
       </View>
       <View style={styles.gallery}>
-        <ImagesSlider />
+        <ImagesSlider images={hotel.images} />
       </View>
     </>
   );
