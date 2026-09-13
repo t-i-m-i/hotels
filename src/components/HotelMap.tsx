@@ -38,6 +38,16 @@ export default function HotelMap({
   const [isMapReady, setIsMapReady] = useState(false);
   const [zoom, setZoom] = useState(12);
 
+  // Read the current hotel list from a ref (instead of adding `hotels` to
+  // the flyTo effect's dependency array) so a viewport refetch after the
+  // hotel is already selected doesn't re-fire flyTo and snap the camera
+  // back mid-gesture — that was the bug where zooming/panning the detail
+  // page's map kept jumping back to zoom 14 a moment later.
+  const hotelsRef = useRef<Hotel[]>(hotels);
+  useEffect(() => {
+    hotelsRef.current = hotels;
+  });
+
   const handleZoom = (delta: number) => {
     const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + delta));
     cameraRef.current?.zoomTo(nextZoom, { duration: 200 });
@@ -53,28 +63,32 @@ export default function HotelMap({
     boundsDebounce.current = setTimeout(() => onBoundsChange(bounds), 350);
   };
 
+  // Fly to the selected hotel once, when the selection itself changes — not
+  // on every `hotels` update (see the hotelsRef comment above).
   useEffect(() => {
-    if (!isMapReady) {
-      return;
-    }
+    if (!isMapReady || !selectedHotelId) return;
+    const selected = hotelsRef.current.find((h) => h.id === selectedHotelId);
+    if (!selected) return;
+    cameraRef.current?.flyTo({
+      center: hotelToLngLat(selected),
+      zoom: 14,
+      duration: 1200,
+    });
+  }, [selectedHotelId, isMapReady]);
 
-    if (selectedHotel) {
-      cameraRef.current?.flyTo({
-        center: hotelToLngLat(selectedHotel),
-        zoom: 14,
-        duration: 1200,
-      });
-    } else if (!onBoundsChange) {
-      // Viewport-driven maps own their own camera via panning — refitting to
-      // the (constantly changing) hotel set here would fight the user's pan.
-      const bounds = boundsForHotels(hotels);
-      if (!bounds) return;
-      cameraRef.current?.fitBounds(bounds, {
-        padding: { top: 60, right: 60, bottom: 60, left: 60 },
-        duration: 1200,
-      });
-    }
-  }, [selectedHotel, isMapReady, hotels, onBoundsChange]);
+  // Fit to the full hotel set — only for non-interactive maps (no selection,
+  // no viewport panning). Viewport-driven maps own their own camera via
+  // panning — refitting to the (constantly changing) hotel set here would
+  // fight the user's pan.
+  useEffect(() => {
+    if (!isMapReady || selectedHotelId || onBoundsChange) return;
+    const bounds = boundsForHotels(hotels);
+    if (!bounds) return;
+    cameraRef.current?.fitBounds(bounds, {
+      padding: { top: 60, right: 60, bottom: 60, left: 60 },
+      duration: 1200,
+    });
+  }, [selectedHotelId, isMapReady, hotels, onBoundsChange]);
 
   return (
     <View style={styles.container}>
