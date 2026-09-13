@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { getHotel, getHotels, getHotelsInBounds } from "@/api/hotels";
+import { Bounds } from "@/utils/geo";
 import {
   keepPreviousData,
   useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
-import { getHotel, getHotels } from "@/api/hotels";
 
 type UseHotelsOptions = {
   pageSize?: number;
@@ -83,55 +83,30 @@ export function useHotels(search?: string, options?: UseHotelsOptions) {
   };
 }
 
-/**
- * The Map tab needs every hotel, not one page — this drains all pages on mount.
- * Fine at the current scale (~2 requests). TODO: replace with a viewport query,
- * e.g. GET /hotels?swLat=&swLng=&neLat=&neLng= driven by the map's
- * onRegionChangeComplete. Hotels already carry geo, so the API only needs the
- * bounds params — no new data.
- */
-export function useAllHotels() {
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery({
-    queryKey: ["hotels", "all"],
-    queryFn: ({ pageParam }) => getHotels(undefined, pageParam, 80),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      const { page, pageCount } = lastPage.meta.pagination;
-      return page < pageCount ? page + 1 : undefined;
-    },
-    select: (data) => data.pages.flatMap((p) => p.data),
-  });
-
-  useEffect(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  return {
-    hotels: data ?? [],
-    /**
-     * Stay "loading" until every page is in, so the map doesn't pop pins in
-     * one batch at a time. Drop the spinner if a fetch errored mid-drain
-     * (hasNextPage can still be true then), otherwise the map would hang on
-     * the loader forever.
-     */
-    isLoading: (isLoading || !!hasNextPage) && !isError,
-    isError,
-  };
-}
-
 export function useHotel(id: string | undefined) {
   return useQuery({
     queryKey: ["hotel", id],
     queryFn: () => getHotel(id as string),
     enabled: !!id,
   });
+}
+
+export function useHotelsInBounds(bounds: Bounds | null, search?: string) {
+  const normalized = search?.trim() || undefined;
+
+  const { data, isLoading, isError } = useQuery({
+    // Round the key so sub-pixel pans don't spawn a new request per frame.
+    queryKey: [
+      "hotels",
+      "bounds",
+      bounds?.map((n) => Number(n.toFixed(3))),
+      normalized,
+    ],
+    queryFn: () => getHotelsInBounds(bounds!, normalized),
+    enabled: bounds !== null,
+    placeholderData: keepPreviousData, // hold old pins while the next set loads
+    staleTime: 1000 * 30,
+  });
+
+  return { hotels: data ?? [], isLoading, isError };
 }

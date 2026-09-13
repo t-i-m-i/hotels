@@ -1,6 +1,6 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -16,12 +16,13 @@ import {
   useCreateBooking,
   useCurrentBookingsByHotel,
 } from "@/api/hooks/useBookings";
-import { useHotel } from "@/api/hooks/useHotels";
+import { useHotel, useHotelsInBounds } from "@/api/hooks/useHotels";
 import { colors } from "@/constants/colors";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
+import { bboxAround, type Bounds } from "@/utils/geo";
 import { scheduleBookingConfirmedNotification } from "@/utils/notifications";
 
 export default function HotelScreen() {
@@ -29,6 +30,18 @@ export default function HotelScreen() {
   const { data: hotel, isLoading, isError } = useHotel(hotelId);
   const { data: bookings } = useCurrentBookingsByHotel(hotelId);
   const router = useRouter();
+
+  // Seed the map with a bbox around the hotel (nearby behaviour, matches
+  // web); once the user pans, the viewport they chose takes over.
+  const [viewportBounds, setViewportBounds] = useState<Bounds | null>(null);
+  const bounds = viewportBounds ?? (hotel ? bboxAround(hotel.geo, 25) : null);
+  const { hotels: nearby } = useHotelsInBounds(bounds);
+  // Guarantee the selected hotel is present even if the bbox/cap dropped it.
+  const mapHotels = !hotel
+    ? []
+    : nearby.some((h) => h.id === hotel.id)
+      ? nearby
+      : [hotel, ...nearby];
 
   const insets = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -103,7 +116,11 @@ export default function HotelScreen() {
         contentContainerStyle={styles.contentContainer}
       >
         <View style={styles.mapContainer}>
-          <HotelMap hotels={[hotel]} selectedHotelId={hotelId} />
+          <HotelMap
+            hotels={mapHotels}
+            selectedHotelId={hotelId}
+            onBoundsChange={setViewportBounds}
+          />
         </View>
 
         <HotelDetails

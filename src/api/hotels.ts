@@ -1,5 +1,6 @@
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/generated/schema";
+import { Bounds } from "@/utils/geo";
 
 export type Hotel = components["schemas"]["HotelDto"];
 export type HotelImage = components["schemas"]["HotelImageDto"];
@@ -27,6 +28,20 @@ export async function getHotel(id: string): Promise<Hotel> {
   });
   if (error || !data) {
     throw error ?? new Error(`Hotel with id "${id}" not found`);
+  }
+  return data;
+}
+
+export async function getHotelsInBounds(
+  bounds: Bounds,
+  search?: string,
+): Promise<Hotel[]> {
+  const [swLng, swLat, neLng, neLat] = bounds;
+  const { data, error } = await apiClient.GET("/hotels/within-bounds", {
+    params: { query: { swLat, swLng, neLat, neLng, search } },
+  });
+  if (error || !data) {
+    throw error ?? new Error("Failed to load hotels in bounds");
   }
   return data;
 }

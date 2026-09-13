@@ -3,14 +3,21 @@ import {
   type CameraRef,
   Map,
   Marker,
+  ViewStateChangeEvent,
 } from "@maplibre/maplibre-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import type { Hotel } from "@/api/hotels";
 import { colors } from "@/constants/colors";
 import { MAP_STYLE_URL } from "@/constants/map";
-import { boundsForHotels, hotelToLngLat } from "@/utils/geo";
+import { Bounds, boundsForHotels, hotelToLngLat } from "@/utils/geo";
 
 const MIN_ZOOM = 3;
 const MAX_ZOOM = 18;
@@ -18,10 +25,13 @@ const MAX_ZOOM = 18;
 export default function HotelMap({
   hotels,
   selectedHotelId,
+  onBoundsChange, // NEW — omit on the detail screen to keep single-hotel behaviour
 }: {
   hotels: Hotel[];
   selectedHotelId?: string;
+  onBoundsChange?: (bounds: Bounds) => void;
 }) {
+  const boundsDebounce = useRef<ReturnType<typeof setTimeout>>(undefined);
   const selectedHotel = hotels.find((hotel) => hotel.id === selectedHotelId);
 
   const cameraRef = useRef<CameraRef>(null);
@@ -31,6 +41,16 @@ export default function HotelMap({
   const handleZoom = (delta: number) => {
     const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom + delta));
     cameraRef.current?.zoomTo(nextZoom, { duration: 200 });
+  };
+
+  const handleRegionDidChange = (
+    e: NativeSyntheticEvent<ViewStateChangeEvent>,
+  ) => {
+    setZoom(e.nativeEvent.zoom); // existing behaviour
+    if (!onBoundsChange) return;
+    clearTimeout(boundsDebounce.current);
+    const bounds = e.nativeEvent.bounds; // [west, south, east, north]
+    boundsDebounce.current = setTimeout(() => onBoundsChange(bounds), 350);
   };
 
   useEffect(() => {
@@ -44,13 +64,17 @@ export default function HotelMap({
         zoom: 14,
         duration: 1200,
       });
-    } else {
-      cameraRef.current?.fitBounds(boundsForHotels(hotels), {
+    } else if (!onBoundsChange) {
+      // Viewport-driven maps own their own camera via panning — refitting to
+      // the (constantly changing) hotel set here would fight the user's pan.
+      const bounds = boundsForHotels(hotels);
+      if (!bounds) return;
+      cameraRef.current?.fitBounds(bounds, {
         padding: { top: 60, right: 60, bottom: 60, left: 60 },
         duration: 1200,
       });
     }
-  }, [selectedHotel, isMapReady, hotels]);
+  }, [selectedHotel, isMapReady, hotels, onBoundsChange]);
 
   return (
     <View style={styles.container}>
@@ -58,7 +82,7 @@ export default function HotelMap({
         style={styles.map}
         mapStyle={MAP_STYLE_URL}
         onDidFinishLoadingMap={() => setIsMapReady(true)}
-        onRegionDidChange={(event) => setZoom(event.nativeEvent.zoom)}
+        onRegionDidChange={handleRegionDidChange}
       >
         <Camera
           ref={cameraRef}
