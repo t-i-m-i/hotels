@@ -91,18 +91,11 @@ export function useHotel(id: string | undefined) {
   });
 }
 
-export function useHotelsInBounds(bounds: Bounds | null, search?: string) {
-  const normalized = search?.trim() || undefined;
-
+export function useHotelsInBounds(bounds: Bounds | null) {
   const { data, isLoading, isError } = useQuery({
     // Round the key so sub-pixel pans don't spawn a new request per frame.
-    queryKey: [
-      "hotels",
-      "bounds",
-      bounds?.map((n) => Number(n.toFixed(3))),
-      normalized,
-    ],
-    queryFn: () => getHotelsInBounds(bounds!, normalized),
+    queryKey: ["hotels", "bounds", bounds?.map((n) => Number(n.toFixed(3)))],
+    queryFn: () => getHotelsInBounds(bounds!),
     enabled: bounds !== null,
     placeholderData: keepPreviousData, // hold old pins while the next set loads
     staleTime: 1000 * 30,
