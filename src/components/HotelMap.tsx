@@ -16,7 +16,7 @@ import {
 
 import type { Hotel } from "@/api/hotels";
 import { colors } from "@/constants/colors";
-import { MAP_STYLE_URL } from "@/constants/map";
+import { DEFAULT_MAP_BOUNDS, MAP_STYLE_URL } from "@/constants/map";
 import { Bounds, boundsForHotels, hotelToLngLat } from "@/utils/geo";
 
 const MIN_ZOOM = 3;
@@ -103,7 +103,7 @@ export default function HotelMap({
           minZoom={MIN_ZOOM}
           maxZoom={MAX_ZOOM}
           initialViewState={{
-            bounds: boundsForHotels(hotels),
+            bounds: boundsForHotels(hotels) ?? DEFAULT_MAP_BOUNDS,
             padding: { top: 60, right: 60, bottom: 60, left: 60 },
           }}
         />
