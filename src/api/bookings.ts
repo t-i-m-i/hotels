@@ -49,3 +49,15 @@ export async function getBookingsByUser(
   }
   return data;
 }
+
+// TODO refactor API to return BookingDetails instead of Booking for this endpoint
+// TODO guard in API to ensure that the user can only access their own bookings
+export async function getBooking(id: string): Promise<Booking> {
+  const { data, error } = await apiClient.GET("/bookings/{id}", {
+    params: { path: { id } },
+  });
+  if (error || !data) {
+    throw toError(error, `Booking with id "${id}" not found`);
+  }
+  return data;
+}

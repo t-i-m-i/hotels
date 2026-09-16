@@ -108,7 +108,6 @@ export default function HotelScreen() {
       <Stack.Screen
         options={{
           title: hotel?.name ?? "Hotel Details",
-          headerBackButtonDisplayMode: "minimal",
         }}
       />
       <ScrollView

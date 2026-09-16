@@ -1,7 +1,8 @@
 import type { BookingDetails } from "@/api/bookings";
 import { colors } from "@/constants/colors";
 import { getLocalDateString } from "@/utils/dateRange";
-import { StyleSheet, Text, View } from "react-native";
+import { Link } from "expo-router";
+import { Pressable, StyleSheet, Text } from "react-native";
 
 function isPastBooking(checkOut: string): boolean {
   return checkOut < getLocalDateString();
@@ -17,23 +18,31 @@ export function BookingListItem({
   const isPast = isPastBooking(bookingDetails.checkOut);
 
   return (
-    <View
-      style={[
-        styles.card,
-        isPast && styles.cardPast,
-        newBookingId === bookingDetails.id && styles.cardNew,
-      ]}
+    <Link
+      href={{
+        pathname: "/booking/[bookingId]",
+        params: { bookingId: bookingDetails.id },
+      }}
+      asChild
     >
-      {newBookingId === bookingDetails.id && (
-        <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
-      )}
-      <Text style={[styles.hotelName, isPast && styles.textPast]}>
-        {bookingDetails.hotel.name}
-      </Text>
-      <Text style={[styles.dates, isPast && styles.textPast]}>
-        {bookingDetails.checkIn} – {bookingDetails.checkOut}
-      </Text>
-    </View>
+      <Pressable
+        style={StyleSheet.flatten([
+          styles.card,
+          isPast && styles.cardPast,
+          newBookingId === bookingDetails.id && styles.cardNew,
+        ])}
+      >
+        {newBookingId === bookingDetails.id && (
+          <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
+        )}
+        <Text style={[styles.hotelName, isPast && styles.textPast]}>
+          {bookingDetails.hotel.name}
+        </Text>
+        <Text style={[styles.dates, isPast && styles.textPast]}>
+          {bookingDetails.checkIn} – {bookingDetails.checkOut}
+        </Text>
+      </Pressable>
+    </Link>
   );
 }
 

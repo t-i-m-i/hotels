@@ -1,9 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  getBooking,
   getBookingsByUser,
   getCurrentBookingsByHotel,
   submitBooking,
 } from "@/api/bookings";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const userId = "bf721a73-1a8b-4de2-b74b-a747e1197d3f";
 
@@ -41,5 +42,13 @@ export function useMyBookings() {
     queryKey: bookingKeys.bookingsByUser(userId),
     queryFn: () => getBookingsByUser(userId),
     enabled: !!userId,
+  });
+}
+
+export function useBooking(id: string | undefined) {
+  return useQuery({
+    queryKey: ["booking", id],
+    queryFn: () => getBooking(id as string),
+    enabled: !!id,
   });
 }
