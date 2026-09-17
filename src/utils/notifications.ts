@@ -29,7 +29,7 @@ export async function ensureNotificationPermissionsAsync(): Promise<boolean> {
  * "host confirmed" push that would come from the backend.
  * see: docs/guides/notifications.md
  */
-export async function scheduleBookingConfirmedNotification() {
+export async function scheduleBookingConfirmedNotification(bookingId: string) {
   const hasPermission = await ensureNotificationPermissionsAsync();
   if (!hasPermission) {
     return;
@@ -38,6 +38,9 @@ export async function scheduleBookingConfirmedNotification() {
     content: {
       title: "Booking confirmed",
       body: "Your host has just confirmed your booking. Have a nice stay!",
+      data: {
+        url: `hotels://booking/${bookingId}`
+      },
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,

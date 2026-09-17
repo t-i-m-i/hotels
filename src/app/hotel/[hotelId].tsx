@@ -17,11 +17,11 @@ import {
   useCurrentBookingsByHotel,
 } from "@/api/hooks/useBookings";
 import { useHotel, useHotelsInBounds } from "@/api/hooks/useHotels";
-import { colors } from "@/constants/colors";
-import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
+import { colors } from "@/constants/colors";
+import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import { bboxAround, type Bounds } from "@/utils/geo";
 import { scheduleBookingConfirmedNotification } from "@/utils/notifications";
 
@@ -75,9 +75,9 @@ export default function HotelScreen() {
       },
       {
         onSuccess: (data) => {
-          // resetSelection(); // used if we do not redirect but display success message. keep for now.
+          // resetSelection(); // used if we do not redirect but display success message. keep for now as ref.
           bottomSheetRef.current?.close();
-          scheduleBookingConfirmedNotification();
+          scheduleBookingConfirmedNotification(data.id);
           router.push({
             pathname: "/my-bookings",
             params: { newBookingId: data.id },
