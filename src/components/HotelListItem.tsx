@@ -1,6 +1,7 @@
 import type { Hotel } from "@/api/hotels";
 import { Link } from "expo-router";
 import { Pressable, Text, StyleSheet } from "react-native";
+import FavoriteButton from "./FavoriteButton";
 
 export default function HotelListItem({ hotel }: { hotel: Hotel }) {
   return (
@@ -12,6 +13,7 @@ export default function HotelListItem({ hotel }: { hotel: Hotel }) {
         <Text style={styles.name}>{hotel.name}</Text>
         <Text style={styles.location}>{hotel.location}</Text>
         <Text style={styles.description}>{hotel.description}</Text>
+        <FavoriteButton hotel={hotel} />
       </Pressable>
     </Link>
   );

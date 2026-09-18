@@ -20,12 +20,22 @@ export default function RootLayout() {
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="my-bookings">
-        <NativeTabs.Trigger.Label>My Bookings</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Bookings</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: "ticket", selected: "ticket.fill" }}
           md={{
             default: "confirmation_number",
             selected: "confirmation_number",
+          }}
+        />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="favorites">
+        <NativeTabs.Trigger.Label>Favs</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{ default: "heart", selected: "heart.fill" }}
+          md={{
+            default: "heart_plus",
+            selected: "heart_plus",
           }}
         />
       </NativeTabs.Trigger>
