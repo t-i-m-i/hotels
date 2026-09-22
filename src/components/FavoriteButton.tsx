@@ -22,6 +22,7 @@ export default function FavoriteButton({ hotel }: { hotel: Hotel }) {
 
   return (
     <Pressable
+      testID="favorite-button"
       onPress={toggleFavorite}
       hitSlop={8}
       accessibilityRole="button"
@@ -33,9 +34,7 @@ export default function FavoriteButton({ hotel }: { hotel: Hotel }) {
         name={isFavorite ? "heart.fill" : "heart"}
         size={22}
         tintColor={isFavorite ? "#FF3B30" : "#8E8E93"}
-        fallback={
-          <Text style={styles.fallback}>{isFavorite ? "♥" : "♡"}</Text>
-        }
+        fallback={<Text style={styles.fallback}>{isFavorite ? "♥" : "♡"}</Text>}
       />
     </Pressable>
   );
