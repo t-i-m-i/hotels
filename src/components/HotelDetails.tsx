@@ -1,8 +1,8 @@
 import { Hotel } from "@/api/hotels";
-import { colors } from "@/constants/colors";
 import { SelectedRange } from "@/hooks/useDateRangeSelection";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 import ImagesSlider from "./ImagesSlider";
 
 export default function HotelDetails({
@@ -45,7 +45,7 @@ export default function HotelDetails({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   container: {
     padding: 16,
     gap: 4,
@@ -53,14 +53,15 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 22,
     fontWeight: "700",
+    color: theme.colors.text,
   },
   location: {
     fontSize: 14,
-    color: "#6B6B70",
+    color: theme.colors.textMuted,
   },
   description: {
     fontSize: 15,
-    color: "#3A3A3C",
+    color: theme.colors.text,
     marginTop: 8,
     lineHeight: 20,
   },
@@ -68,20 +69,20 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 14,
     borderRadius: 12,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: theme.colors.surface,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#D1D1D6",
+    borderColor: theme.colors.border,
     alignItems: "center",
   },
   selectDatesButtonPressed: {
-    backgroundColor: "#E5E5EA",
+    backgroundColor: theme.colors.background,
   },
   selectDatesText: {
     fontSize: 15,
     fontWeight: "600",
-    color: colors.primary,
+    color: theme.colors.primary,
   },
   gallery: {
     height: 400,
   },
-});
+}));

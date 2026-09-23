@@ -1,5 +1,4 @@
 import { useBooking } from "@/api/hooks/useBookings";
-import { colors } from "@/constants/colors";
 import { Stack, useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
@@ -8,13 +7,15 @@ import {
   Text,
   View,
 } from "react-native";
+import { useUnistyles } from "react-native-unistyles";
 
 export default function BookingScreen() {
+  const { theme } = useUnistyles();
   const { bookingId } = useLocalSearchParams<{ bookingId?: string }>();
   const { data: booking, isLoading, isError } = useBooking(bookingId);
 
   if (isLoading) {
-    return <ActivityIndicator color={colors.primary} />;
+    return <ActivityIndicator color={theme.colors.primary} />;
   }
 
   if (isError || !booking) {

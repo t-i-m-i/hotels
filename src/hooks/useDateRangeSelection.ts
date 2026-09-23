@@ -1,11 +1,10 @@
 import { Booking } from "@/api/bookings";
-import { colors } from "@/constants/colors";
 import { getDatesInRange } from "@/utils/dateRange";
 import { useMemo, useState } from "react";
 import { DateData, MarkedDates } from "react-native-calendars/src/types";
+import { useUnistyles } from "react-native-unistyles";
 
 export type SelectedRange = { start?: string; end?: string };
-const SELECTED_RANGE_COLOR = colors.primary;
 
 export default function useDateRangeSelection({
   bookings,
@@ -14,6 +13,8 @@ export default function useDateRangeSelection({
   bookings?: Booking[];
   onRangeComplete?: () => void;
 }) {
+  const { theme } = useUnistyles();
+  const selectedRangeColor = theme.colors.primary;
   const [selectedRange, setSelectedRange] = useState<SelectedRange>({});
 
   const bookedDates = useMemo(() => {
@@ -37,7 +38,7 @@ export default function useDateRangeSelection({
       const rangeDates = getDatesInRange(start, end);
       rangeDates.forEach((date, index) => {
         marks[date] = {
-          color: SELECTED_RANGE_COLOR,
+          color: selectedRangeColor,
           textColor: "white",
           startingDay: index === 0,
           endingDay: index === rangeDates.length - 1,
@@ -45,7 +46,7 @@ export default function useDateRangeSelection({
       });
     } else if (start) {
       marks[start] = {
-        color: SELECTED_RANGE_COLOR,
+        color: selectedRangeColor,
         textColor: "white",
         startingDay: true,
         endingDay: true,
@@ -53,7 +54,7 @@ export default function useDateRangeSelection({
     }
 
     return marks;
-  }, [bookedDates, selectedRange]);
+  }, [bookedDates, selectedRange, selectedRangeColor]);
 
   const handleDayPress = (day: DateData) => {
     const { dateString } = day;

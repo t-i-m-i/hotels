@@ -6,16 +6,10 @@ import {
   ViewStateChangeEvent,
 } from "@maplibre/maplibre-react-native";
 import { useEffect, useRef, useState } from "react";
-import {
-  NativeSyntheticEvent,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { NativeSyntheticEvent, Pressable, Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 import type { Hotel } from "@/api/hotels";
-import { colors } from "@/constants/colors";
 import { DEFAULT_MAP_BOUNDS, MAP_STYLE_URL } from "@/constants/map";
 import { Bounds, boundsForHotels, hotelToLngLat } from "@/utils/geo";
 
@@ -141,7 +135,7 @@ export default function HotelMap({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
   },
@@ -152,14 +146,14 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.primary,
+    backgroundColor: theme.colors.primary,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
     borderColor: "white",
   },
   pinSelected: {
-    backgroundColor: colors.accent,
+    backgroundColor: theme.colors.accent,
   },
   pinLabel: {
     color: "white",
@@ -192,6 +186,6 @@ const styles = StyleSheet.create({
   zoomButtonLabel: {
     fontSize: 20,
     fontWeight: "600",
-    color: colors.primary,
+    color: theme.colors.primary,
   },
-});
+}));

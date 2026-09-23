@@ -1,10 +1,11 @@
 import { NativeTabs } from "expo-router/unstable-native-tabs";
-
-import { colors } from "@/constants/colors";
+import { useUnistyles } from "react-native-unistyles";
 
 export default function RootLayout() {
+  const { theme } = useUnistyles();
+
   return (
-    <NativeTabs iconColor={{ selected: colors.primary }}>
+    <NativeTabs iconColor={{ selected: theme.colors.primary }}>
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon

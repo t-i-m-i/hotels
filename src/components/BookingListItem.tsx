@@ -1,8 +1,8 @@
 import type { BookingDetails } from "@/api/bookings";
-import { colors } from "@/constants/colors";
 import { getLocalDateString } from "@/utils/dateRange";
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, Text } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 function isPastBooking(checkOut: string): boolean {
   return checkOut < getLocalDateString();
@@ -46,37 +46,38 @@ export function BookingListItem({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   card: {
     padding: 16,
     borderRadius: 12,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: theme.colors.surface,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#D1D1D6",
+    borderColor: theme.colors.border,
     gap: 4,
   },
   cardPast: {
-    backgroundColor: "#FAFAFA",
-    borderColor: "#E5E5EA",
+    backgroundColor: theme.colors.background,
+    borderColor: theme.colors.border,
   },
   cardNew: {
-    borderColor: colors.accent,
+    borderColor: theme.colors.accent,
     borderWidth: 2,
   },
   hotelName: {
     fontSize: 17,
     fontWeight: "600",
+    color: theme.colors.text,
   },
   dates: {
     fontSize: 14,
     fontWeight: "600",
-    color: colors.primary,
+    color: theme.colors.primary,
   },
   textPast: {
-    color: "#9A9A9E",
+    color: theme.colors.textMuted,
   },
   bookingConfirmedText: {
-    color: colors.accent,
+    color: theme.colors.accent,
     fontWeight: "600",
   },
-});
+}));

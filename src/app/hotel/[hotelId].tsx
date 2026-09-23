@@ -6,10 +6,10 @@ import {
   Dimensions,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
@@ -20,7 +20,6 @@ import { useHotel, useHotelsInBounds } from "@/api/hooks/useHotels";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
-import { colors } from "@/constants/colors";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import { bboxAround, type Bounds } from "@/utils/geo";
 import { scheduleBookingConfirmedNotification } from "@/utils/notifications";
@@ -162,7 +161,7 @@ export default function HotelScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   flexView: {
     flex: 1,
     // borderWidth: 1,
@@ -188,34 +187,34 @@ const styles = StyleSheet.create({
   bottomBar: {
     padding: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#D1D1D6",
-    backgroundColor: "#FFFFFF",
+    borderTopColor: theme.colors.border,
+    backgroundColor: theme.colors.background,
     gap: 8,
   },
   bookButton: {
-    backgroundColor: colors.primary,
+    backgroundColor: theme.colors.primary,
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
   },
   bookButtonPressed: {
-    backgroundColor: colors.primaryPressed,
+    backgroundColor: theme.colors.primaryPressed,
   },
   bookButtonDisabled: {
-    backgroundColor: colors.primaryDisabled,
+    backgroundColor: theme.colors.primaryDisabled,
   },
   bookButtonText: {
-    color: colors.onPrimary,
+    color: theme.colors.onPrimary,
     fontSize: 17,
     fontWeight: "600",
   },
   bookingConfirmedText: {
-    color: colors.accent,
+    color: theme.colors.accent,
     fontWeight: "600",
   },
   bookingErrorText: {
-    color: colors.primary,
+    color: theme.colors.primary,
     fontWeight: "600",
   },
-});
+}));

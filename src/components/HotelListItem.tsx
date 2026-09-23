@@ -1,6 +1,7 @@
 import type { Hotel } from "@/api/hotels";
 import { Link } from "expo-router";
-import { Pressable, Text, View, StyleSheet } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 import FavoriteButton from "./FavoriteButton";
 
 export default function HotelListItem({ hotel }: { hotel: Hotel }) {
@@ -21,11 +22,11 @@ export default function HotelListItem({ hotel }: { hotel: Hotel }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   card: {
     padding: 16,
     borderRadius: 12,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: theme.colors.background,
     gap: 4,
   },
   header: {
@@ -38,13 +39,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 17,
     fontWeight: "600",
+    color: theme.colors.text,
   },
   location: {
     fontSize: 13,
-    color: "#6B6B70",
+    color: theme.colors.textMuted,
   },
   description: {
     fontSize: 14,
-    color: "#3A3A3C",
+    color: theme.colors.text,
   },
-});
+}));

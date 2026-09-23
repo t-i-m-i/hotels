@@ -1,16 +1,15 @@
 import type { Hotel } from "@/api/hotels";
-import { colors } from "@/constants/colors";
 import { Link } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Pressable,
-  StyleSheet,
   Text,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
 import HotelListItem from "./HotelListItem";
 
 import * as Location from "expo-location";
@@ -140,9 +139,10 @@ export default function HotelList({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
   list: {
     padding: 16,
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   emptyState: {
     marginTop: 40,
     textAlign: "center",
+    color: theme.colors.textMuted,
   },
   footerSpinner: {
     paddingVertical: 16,
@@ -161,12 +162,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 12,
-    backgroundColor: colors.primary,
+    backgroundColor: theme.colors.primary,
     alignItems: "center",
   },
   mapLinkText: {
-    color: colors.onPrimary,
+    color: theme.colors.onPrimary,
     fontWeight: "600",
     fontSize: 15,
   },
-});
+}));
