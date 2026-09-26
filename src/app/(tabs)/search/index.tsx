@@ -19,6 +19,7 @@ export default function SearchIndex() {
   const debouncedSearch = useDebouncedValue(inputText, 500);
   const trimmedSearch = debouncedSearch.trim();
   const hasSearchQuery = trimmedSearch.length > 0;
+  // info: TanStack Query only does something (fetch, or serve from cache) when the query key it's watching actually changes value between renders. The debounce means the query key itself only ever changes 1 time per pause-in-typing, not once per keystroke - so there's no burst of requests.
   const {
     hotels,
     isLoading,

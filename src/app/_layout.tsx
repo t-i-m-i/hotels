@@ -45,10 +45,13 @@ const AppContent = () => {
   // in sync with the Unistyles theme so headers match the rest of the app
   // instead of always rendering React Navigation's built-in light theme.
   const navigationTheme = {
-    ...DefaultTheme,
-    dark: rt.themeName === "dark",
+    ...DefaultTheme, // spread ALL of DefaultTheme's keys
+    dark: rt.themeName === "dark", // overwrite just `dark` (default is `false`)
+    // overwrite `colors` entirely, with a new object
     colors: {
+      // spread DefaultTheme's 6 color keys in first
       ...DefaultTheme.colors,
+      // overwrite every single one of those keys
       primary: theme.colors.primary,
       background: theme.colors.background,
       card: theme.colors.surface,

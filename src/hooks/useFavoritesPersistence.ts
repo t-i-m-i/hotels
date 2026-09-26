@@ -53,16 +53,11 @@ export default function useFavoritesPersistence() {
     }
     const persistFavorites = async () => {
       try {
-        await AsyncStorage.setItem(
-          "favorites",
-          JSON.stringify(favorites),
-        );
+        await AsyncStorage.setItem("favorites", JSON.stringify(favorites));
       } catch (error) {
         console.error("Failed to persist favorites:", error);
       }
     };
-
     persistFavorites();
-   
   }, [favorites]);
 }
