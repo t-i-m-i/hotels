@@ -3,6 +3,7 @@ import { useUnistyles } from "react-native-unistyles";
 
 export default function RootLayout() {
   const { theme } = useUnistyles();
+  const isLoggedIn = false;
 
   return (
     <NativeTabs iconColor={{ selected: theme.colors.primary }}>
@@ -20,7 +21,7 @@ export default function RootLayout() {
           md={{ default: "map", selected: "map" }}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="my-bookings">
+      <NativeTabs.Trigger name="my-bookings" hidden={!isLoggedIn}>
         <NativeTabs.Trigger.Label>Bookings</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: "ticket", selected: "ticket.fill" }}
