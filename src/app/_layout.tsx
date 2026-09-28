@@ -4,14 +4,14 @@ import useFavoritesPersistence from "@/hooks/useFavoritesPersistence";
 import { store } from "@/store/store";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
+import { DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Provider as StoreProvider } from "react-redux";
 import { useUnistyles } from "react-native-unistyles";
+import { Provider as StoreProvider } from "react-redux";
 
 const queryClient = new QueryClient();
 
@@ -66,7 +66,9 @@ const AppContent = () => {
       <GestureHandlerRootView style={styles.rootView}>
         <BottomSheetModalProvider>
           <ThemeProvider value={navigationTheme}>
+            {/*[info] Stack is required.*/}
             <Stack screenOptions={{ headerBackButtonDisplayMode: "minimal" }}>
+              {/*[info] Stack.Screen is optional, but can be used to configure the screen's options.*/}
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen
                 name="hotel/[hotelId]"
