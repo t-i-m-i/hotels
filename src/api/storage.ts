@@ -1,9 +1,7 @@
 const storageUrl = process.env.EXPO_PUBLIC_STORAGE_URL;
 
 if (!storageUrl) {
-  throw new Error(
-    "EXPO_PUBLIC_STORAGE_URL is not set — check your .env.local",
-  );
+  throw new Error("EXPO_PUBLIC_STORAGE_URL is not set — check your .env.local");
 }
 
 /**

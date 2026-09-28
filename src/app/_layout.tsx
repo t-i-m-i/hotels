@@ -4,6 +4,7 @@ import useFavoritesPersistence from "@/hooks/useFavoritesPersistence";
 import { store } from "@/store/store";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { registerForPushNotificationsAsync } from "@/utils/pushRegistration";
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
 import { DefaultTheme, Stack, ThemeProvider } from "expo-router";
@@ -17,6 +18,10 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   useEffect(() => {
+    registerForPushNotificationsAsync().catch((err: unknown) =>
+      console.error("Failed to register for push notifications", err),
+    );
+
     const subscription = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const url = response.notification.request.content.data?.url as

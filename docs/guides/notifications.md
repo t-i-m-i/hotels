@@ -1,10 +1,23 @@
 # Push notifications: from demo to real backend
 
-## Current state (demo)
+## Current state
 
-`src/utils/notifications.ts` schedules a **local** notification 60 seconds
-after booking, to simulate a host confirming the booking. It's a stand-in —
-no backend or network involved, the device just notifies itself on a timer.
+Booking a hotel still schedules a **local** notification 60 seconds later
+via `src/utils/notifications.ts` ("Booking received" / "Your bookings has
+been made.") — a stand-in acknowledgment that the booking was made, no
+backend involved.
+
+What's now real: the booking starts out with `status: 'pending'` in
+`hotels-api` (see the `booking_status` enum added by
+`migrations/1790605132324_add-status-to-bookings.sql`). When the host
+confirms it — currently done by calling `PATCH /bookings/:id/status` with
+`{ "status": "confirmed" }` from Swagger, since there's no host UI or auth
+yet — `BookingsService.updateStatus` sends an actual Firebase Cloud
+Messaging push ("Booking confirmed by host") to the guest's device via
+`FirebasePushService`. This is **Option B** below, implemented directly
+(no Expo relay). See `docs/logs/013-firebase-push-notifications.md` for the
+full implementation notes and what's still missing (real auth, a host-side
+UI to trigger the status change).
 
 ## What a real "host confirmed" push needs
 
@@ -148,11 +161,81 @@ SDKs on both ends change.
 
 ## Which to pick
 
-- **Option A (Expo relay)** is the default fit here: it's free, reuses the
-  `expo-notifications` package already in the codebase, and needs no native
-  Firebase/APNs config as long as the app stays in the Expo managed
-  workflow.
-- **Option B (direct FCM/APNs)** only pays off if there's a reason to avoid
-  the Expo relay specifically (e.g. leaving the managed workflow for other
-  reasons, or an existing Firebase setup to reuse) — otherwise it's more
-  integration work for the same end result.
+- **Option A (Expo relay)** is the simpler default if you don't specifically
+  want to touch Firebase: free, reuses `expo-notifications`, no native
+  Firebase/APNs config needed while in the managed workflow.
+- **Option B (direct FCM/APNs)** is what's actually implemented here — the
+  goal was learning real Firebase push setup, not avoiding it. See below for
+  the exact client/backend shape and setup steps.
+
+## What's actually implemented (Option B)
+
+- **Client** (`src/utils/pushRegistration.ts`): on app start
+  (`src/app/_layout.tsx`), calls `Notifications.getDevicePushTokenAsync()` —
+  this returns the **raw FCM registration token** (Android) / raw APNs
+  device token (iOS), not an Expo push token — and POSTs it to
+  `hotels-api`'s `POST /push-tokens` via `src/api/pushTokens.ts`, tagged
+  with the demo user id (`src/constants/user.ts`) since there's no auth yet.
+- **Backend** (`hotels-api/src/push-notifications/`):
+  - `push-tokens.service.ts` / `.controller.ts`: upserts `{ userId, token,
+    platform }` into the `device_push_tokens` table (one row per device;
+    `ON CONFLICT (token)` re-associates a re-registered device with
+    whichever user sent it, rather than erroring).
+  - `firebase-push.service.ts`: wraps `firebase-admin`'s `messaging()`.
+    Reads `FIREBASE_PROJECT_ID` / `FIREBASE_CLIENT_EMAIL` /
+    `FIREBASE_PRIVATE_KEY` from env; if any are unset it logs a warning and
+    no-ops (same "log-and-skip in dev" pattern as `ResendEmailService`).
+    On send, a dead/uninstalled-app token (`messaging/registration-token-
+    not-registered` or `messaging/invalid-registration-token`) is deleted
+    from `device_push_tokens` automatically.
+  - `BookingsService.updateStatus`: on `PATCH /bookings/:id/status` with
+    `status: 'confirmed'`, fire-and-forgets a push via
+    `FirebasePushService.sendToUser`, payload includes
+    `data: { url: "hotels://booking/<id>" }` so it reuses the **same**
+    notification-tap deep-link listener already in `_layout.tsx` (no new
+    client-side listener needed — a real push and a local one look
+    identical to that handler).
+
+### Manual Firebase setup (one-time, per developer/environment)
+
+1. **Create a Firebase project**: [console.firebase.google.com](https://console.firebase.google.com) → Add project. Google Analytics is optional, not needed here.
+2. **Register the Android app**: in the project → Add app → Android.
+   - Package name: `com.timi.hotels` (from `app.json`'s `android.package`).
+   - Download the generated **`google-services.json`**, place it at the
+     repo root (`hotels/google-services.json` — already referenced by
+     `app.json`'s `android.googleServicesFile` and gitignored).
+3. **Register the iOS app**: Add app → iOS.
+   - Bundle ID: `com.t-i-m-i.hotels` (from `app.json`'s
+     `ios.bundleIdentifier`).
+   - Download **`GoogleService-Info.plist`**, place it at the repo root
+     (`hotels/GoogleService-Info.plist` — referenced by `app.json`'s
+     `ios.googleServicesFile`, also gitignored).
+   - iOS push additionally needs an **APNs Auth Key** uploaded to Firebase:
+     Apple Developer account → Certificates, IDs & Profiles → Keys → create
+     a key with the "Apple Push Notifications service (APNs)" capability,
+     download the `.p8` file, then in Firebase console → Project settings →
+     Cloud Messaging → Apple app configuration → upload that `.p8` + your
+     Key ID + Team ID. Without this, Android pushes will work but iOS
+     pushes will silently fail.
+4. **Generate a service account key** (this is what the *backend* uses):
+   Firebase console → Project settings (gear icon) → Service accounts →
+   "Generate new private key". This downloads one JSON file containing
+   `project_id`, `client_email`, and `private_key`.
+5. **Set the backend env vars** in `hotels-api/.env` (see
+   `.env.example` for the exact keys/comments):
+   - `FIREBASE_PROJECT_ID` — the JSON's `project_id`.
+   - `FIREBASE_CLIENT_EMAIL` — the JSON's `client_email`.
+   - `FIREBASE_PRIVATE_KEY` — the JSON's `private_key`, pasted with its
+     `\n` escape sequences intact (don't convert them to real newlines in
+     the `.env` file — the code does that conversion at runtime).
+6. **Rebuild the native app** — `google-services.json` /
+   `GoogleService-Info.plist` are native config, so per this repo's usual
+   rule for native module changes: run `bunx expo prebuild` then
+   `expo run:ios` / `expo run:android`. A plain `expo start` JS reload will
+   not pick this up, and a physical device or an emulator/simulator with
+   push capability is needed — plain iOS Simulators cannot receive real
+   APNs pushes (Android emulators with Google Play services can receive
+   FCM).
+7. **Apply the DB migrations**: `cd hotels-api && bun run migrate:up`
+   (adds the `booking_status` enum/column and the `device_push_tokens`
+   table).

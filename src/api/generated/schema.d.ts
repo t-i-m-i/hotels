@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["MeController_getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/hotels": {
         parameters: {
             query?: never;
@@ -28,6 +44,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["HotelsController_findWithinBounds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hotels/nearest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HotelsController_findNearest"];
         put?: never;
         post?: never;
         delete?: never;
@@ -116,6 +148,22 @@ export interface paths {
         patch: operations["BookingsController_update"];
         trace?: never;
     };
+    "/bookings/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["BookingsController_updateStatus"];
+        trace?: never;
+    };
     "/bookings/synthetic": {
         parameters: {
             query?: never;
@@ -127,6 +175,22 @@ export interface paths {
         put?: never;
         post?: never;
         delete: operations["BookingsController_removeSynthetic"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/push-tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PushTokensController_register"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -210,6 +274,11 @@ export interface components {
             checkIn: string;
             /** @example 2026-09-10 */
             checkOut: string;
+            /**
+             * @example pending
+             * @enum {string}
+             */
+            status: "pending" | "confirmed" | "cancelled" | "completed" | "no_show";
         };
         BookingHotelSummaryDto: {
             name: string;
@@ -233,12 +302,30 @@ export interface components {
             /** @example 2026-09-10 */
             checkOut?: string;
         };
+        UpdateBookingStatusDto: {
+            /**
+             * @example confirmed
+             * @enum {string}
+             */
+            status: "pending" | "confirmed" | "cancelled" | "completed" | "no_show";
+        };
         DeleteSyntheticBookingsDto: {
             /**
              * @description Number of synthetic bookings deleted
              * @example 3
              */
             deletedCount: number;
+        };
+        RegisterPushTokenDto: {
+            /** @example bf721a73-1a8b-4de2-b74b-a747e1197d3f */
+            userId: string;
+            /** @example f3a1c9...:APA91b... */
+            token: string;
+            /**
+             * @example ios
+             * @enum {string}
+             */
+            platform: "ios" | "android";
         };
     };
     responses: never;
@@ -249,6 +336,24 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    MeController_getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The signed-in user, from the BetterAuth session cookie. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     HotelsController_findAll: {
         parameters: {
             query?: {
@@ -286,6 +391,30 @@ export interface operations {
                 neLat: number;
                 /** @description North-east corner longitude */
                 neLng: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HotelDto"][];
+                };
+            };
+        };
+    };
+    HotelsController_findNearest: {
+        parameters: {
+            query: {
+                /** @description Longitude */
+                longitude: number;
+                /** @description Latitude */
+                latitude: number;
             };
             header?: never;
             path?: never;
@@ -509,6 +638,38 @@ export interface operations {
             };
         };
     };
+    BookingsController_updateStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBookingStatusDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BookingDto"];
+                };
+            };
+            /** @description Booking not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     BookingsController_removeSynthetic: {
         parameters: {
             query?: never;
@@ -525,6 +686,28 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["DeleteSyntheticBookingsDto"];
                 };
+            };
+        };
+    };
+    PushTokensController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterPushTokenDto"];
+            };
+        };
+        responses: {
+            /** @description Push token registered */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

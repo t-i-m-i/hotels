@@ -24,9 +24,10 @@ export async function ensureNotificationPermissionsAsync(): Promise<boolean> {
 }
 
 /**
- * Schedules a local notification confirming the booking, arriving a minute
- * later to simulate the host confirming it. Demo-only stand-in for a real
- * "host confirmed" push that would come from the backend.
+ * Schedules a local notification acknowledging the booking was made. The
+ * booking starts out "pending" on the backend — the real "host confirmed"
+ * notification now arrives as an actual push (see pushRegistration.ts and
+ * FirebasePushService in hotels-api) once the host confirms it.
  * see: docs/guides/notifications.md
  */
 export async function scheduleBookingConfirmedNotification(bookingId: string) {
@@ -36,10 +37,10 @@ export async function scheduleBookingConfirmedNotification(bookingId: string) {
   }
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Booking confirmed",
-      body: "Your host has just confirmed your booking. Have a nice stay!",
+      title: "Booking received",
+      body: "Your bookings has been made.",
       data: {
-        url: `hotels://booking/${bookingId}`
+        url: `hotels://booking/${bookingId}`,
       },
     },
     trigger: {
