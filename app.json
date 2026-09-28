@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.t-i-m-i.hotels"
+      "bundleIdentifier": "com.t-i-m-i.hotels",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.timi.hotels"
+      "package": "com.timi.hotels",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "output": "static",

@@ -4,9 +4,8 @@ import {
   getCurrentBookingsByHotel,
   submitBooking,
 } from "@/api/bookings";
+import { DEMO_USER_ID as userId } from "@/constants/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-const userId = "bf721a73-1a8b-4de2-b74b-a747e1197d3f";
 
 export const bookingKeys = {
   currentByHotel: (hotelId: string | undefined) =>
