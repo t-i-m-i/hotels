@@ -39,7 +39,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 ## Tech stack
 
 - React Native with Expo
-- Expo Router file-based navigation [src/app/_layout.tsx](src/app/_layout.tsx)]
+- Expo Router file-based navigation [[src/app/_layout.tsx](src/app/_layout.tsx)]
 - tab navigation with native tabs [[src/app/(tabs)/_layout.tsx](<src/app/(tabs)/_layout.tsx>)]
 - Bottom Sheet [[src/app/hotel/[hotelId].tsx](src/app/hotel/[hotelId].tsx)]
 - FlatList backed by TanStack Infinite Query [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
@@ -50,6 +50,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 - E2E happy path testing with Maestro [[.maestro/booking-flow.yaml](.maestro/booking-flow.yaml)]
 - Location [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
 - Notifications [[src/utils/notifications.ts](src/utils/notifications.ts)]
+- Push Notifications [src/utils/pushRegistration.ts](src/utils/pushRegistration.ts)]
 - Deep linking [[src/app/_layout.tsx](src/app/_layout.tsx)]
 - Reanimated - Animated: FlatList, View, Image, Style, ScrollHandler [[src/components/CarouselItem.tsx](src/components/CarouselItem.tsx)]
 - Themes via Unistyles and ThemeProvider [[src/unistyles.ts](src/unistyles.ts)]
