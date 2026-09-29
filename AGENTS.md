@@ -7,8 +7,7 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
 ## What this project is
 
 A React Native (Expo Router) app for browsing hotels and viewing them on a
-map. See `README.md` for the pitch and `plan.md` for the phased roadmap
-(mocked list → map → geolocation → city search → real backend).
+map. See `README.md` for the pitch and feature list.
 
 ## Stack
 
@@ -41,10 +40,10 @@ map. See `README.md` for the pitch and `plan.md` for the phased roadmap
   calls in a later phase.
 - `src/types/` — shared types (`Hotel`).
 - `src/utils/`, `src/constants/` — geo helpers, map config.
-- `docs/` — reference docs (current-state, edited in place) plus
-  `docs/logs/` (append-only, dated work-session notes — never edit old
-  entries, correct in a new one instead). See `docs/README.md`.
-- `plan.md` — the living roadmap/phase plan at the repo root.
+- `docs/` — `considerations/` (design tradeoffs/decisions), `guides/`
+  (how-tos, current-state) and `logs/` (append-only, dated work-session
+  notes — never edit old entries, correct in a new one instead). See
+  `docs/README.md`.
 
 ## Conventions
 
