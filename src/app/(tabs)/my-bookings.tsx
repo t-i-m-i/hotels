@@ -7,11 +7,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function MyBookings() {
-  const { data: bookings, isLoading, isError } = useMyBookings();
-  const { newBookingId } = useLocalSearchParams<{ newBookingId?: string }>();
-  const router = useRouter();
   const { data: session, isPending: isSessionPending } =
     authClient.useSession();
+  const {
+    data: bookings,
+    isLoading,
+    isError,
+  } = useMyBookings(session?.user.id);
+  const { newBookingId } = useLocalSearchParams<{ newBookingId?: string }>();
+  const router = useRouter();
 
   if (isSessionPending) {
     return (
@@ -62,7 +66,9 @@ export default function MyBookings() {
   if (isError || !bookings) {
     return (
       <View style={styles.center}>
-        <Text>Couldn&apos;t load your bookings.</Text>
+        <Text style={styles.themeColorsText}>
+          Couldn&apos;t load your bookings.
+        </Text>
       </View>
     );
   }
@@ -80,7 +86,7 @@ export default function MyBookings() {
           isLoading ? (
             <ActivityIndicator style={styles.emptyState} />
           ) : (
-            <Text style={styles.emptyState}>
+            <Text style={[styles.emptyState, styles.themeColorsText]}>
               {isError ? "Couldn't load your bookings." : "No bookings found."}
             </Text>
           )
@@ -118,5 +124,8 @@ const styles = StyleSheet.create((theme) => ({
   emptyState: {
     marginTop: 40,
     textAlign: "center",
+  },
+  themeColorsText: {
+    color: theme.colors.text,
   },
 }));

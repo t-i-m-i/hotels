@@ -4,13 +4,13 @@ import {
   getCurrentBookingsByHotel,
   submitBooking,
 } from "@/api/bookings";
-import { DEMO_USER_ID as userId } from "@/constants/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const bookingKeys = {
   currentByHotel: (hotelId: string | undefined) =>
     ["current-bookings-by-hotel", hotelId] as const,
-  bookingsByUser: (userId: string) => ["bookings-by-user", userId] as const,
+  bookingsByUser: (userId: string | undefined) =>
+    ["bookings-by-user", userId] as const,
 };
 
 export function useCurrentBookingsByHotel(hotelId: string | undefined) {
@@ -36,11 +36,12 @@ export function useCreateBooking(hotelId: string | undefined) {
   });
 }
 
-export function useMyBookings() {
+export function useMyBookings(userId: string | undefined) {
   return useQuery({
     queryKey: bookingKeys.bookingsByUser(userId),
-    queryFn: () => getBookingsByUser(userId),
+    queryFn: () => getBookingsByUser(userId as string),
     enabled: !!userId,
+    retry: false,
   });
 }
 

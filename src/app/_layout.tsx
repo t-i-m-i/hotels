@@ -13,15 +13,14 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useUnistyles } from "react-native-unistyles";
 import { Provider as StoreProvider } from "react-redux";
+import { authClient } from "@/api/authClient";
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  useEffect(() => {
-    registerForPushNotificationsAsync().catch((err: unknown) =>
-      console.error("Failed to register for push notifications", err),
-    );
+  const { data: session } = authClient.useSession();
 
+  useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const url = response.notification.request.content.data?.url as
@@ -34,6 +33,13 @@ export default function RootLayout() {
 
     return () => subscription.remove();
   }, []);
+
+  useEffect(() => {
+    if (!session?.user.id) return;
+    registerForPushNotificationsAsync(session.user.id).catch((err: unknown) =>
+      console.error("Failed to register for push notifications", err),
+    );
+  }, [session?.user.id]);
 
   return (
     <StoreProvider store={store}>
