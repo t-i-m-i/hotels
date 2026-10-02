@@ -1,22 +1,9 @@
-import Constants from "expo-constants";
 import createClient from "openapi-fetch";
 import type { paths } from "@/api/generated/schema";
 import { getAuthHeaders } from "@/api/auth";
+import { getApiBaseUrl } from "@/api/getApiBaseUrl";
 
-// In dev, derive the host from the address Metro told the device to connect
-// through (works for iOS sim, Android emulator, and physical devices on the
-// same network) instead of hardcoding localhost/10.0.2.2 per platform.
-const devHost = Constants.expoConfig?.hostUri?.split(":")[0];
-
-const baseUrl = __DEV__
-  ? `http://${devHost ?? "localhost"}:3000`
-  : process.env.EXPO_PUBLIC_API_URL;
-
-if (!baseUrl) {
-  throw new Error("EXPO_PUBLIC_API_URL is not set — check your .env.local");
-}
-
-export const apiClient = createClient<paths>({ baseUrl });
+export const apiClient = createClient<paths>({ baseUrl: getApiBaseUrl() });
 
 // EXPO_PUBLIC_* vars are inlined at bundle time by Metro, not read from the
 // device at runtime — so this is only ever true for a JS bundle actually
@@ -28,8 +15,8 @@ export const apiClient = createClient<paths>({ baseUrl });
 const isE2eTestMode = process.env.EXPO_PUBLIC_E2E_TEST_MODE === "true";
 
 apiClient.use({
-  onRequest({ request }) {
-    for (const [key, value] of Object.entries(getAuthHeaders())) {
+  async onRequest({ request }) {
+    for (const [key, value] of Object.entries(await getAuthHeaders())) {
       request.headers.set(key, value);
     }
     if (isE2eTestMode) {

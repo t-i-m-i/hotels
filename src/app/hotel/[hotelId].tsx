@@ -9,9 +9,10 @@ import {
   Text,
   View,
 } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
 
+import { authClient } from "@/api/authClient";
 import {
   useCreateBooking,
   useCurrentBookingsByHotel,
@@ -29,6 +30,8 @@ export default function HotelScreen() {
   const { data: hotel, isLoading, isError } = useHotel(hotelId);
   const { data: bookings } = useCurrentBookingsByHotel(hotelId);
   const router = useRouter();
+  const { data: session, isPending: isSessionPending } =
+    authClient.useSession();
 
   // Seed the map with a bbox around the hotel (nearby behaviour, matches
   // web); once the user pans, the viewport they chose takes over.
@@ -64,6 +67,18 @@ export default function HotelScreen() {
 
   const handleBooking = () => {
     if (!hotel || !selectedRange.start || !selectedRange.end) {
+      return;
+    }
+    if (isSessionPending) {
+      return;
+    }
+    if (!session) {
+      router.push({
+        pathname: "/(auth)/login",
+        params: {
+          redirectTo: `/hotel/${hotel.id}`,
+        },
+      });
       return;
     }
     book(
