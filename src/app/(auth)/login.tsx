@@ -36,6 +36,7 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <TextInput
+        testID="email-input"
         style={styles.input}
         placeholder="Email"
         placeholderTextColor={theme.colors.textMuted}
@@ -45,6 +46,7 @@ export default function Login() {
         onChangeText={setEmail}
       />
       <TextInput
+        testID="password-input"
         style={styles.input}
         placeholder="Password"
         placeholderTextColor={theme.colors.textMuted}
@@ -53,6 +55,7 @@ export default function Login() {
         onChangeText={setPassword}
       />
       <Button
+        testID="login-button"
         title="Login"
         onPress={handleLogin}
         color={theme.colors.primary}

@@ -4,6 +4,15 @@
 #   - hotels-api running at http://localhost:3000 with the demo seed data,
 #     and migrated far enough to have bookings.is_synthetic (see hotels-api
 #     migrations/..._add-is-synthetic-to-bookings.sql).
+#   - POST /bookings now requires a real BetterAuth session (no more
+#     anonymous/client-supplied userId), so this flow logs in as a
+#     dedicated e2e account. Seed it ONCE against hotels-api, via
+#     BetterAuth's own sign-up endpoint (not a raw SQL insert, so the
+#     password hash matches what it expects at login):
+#       curl -X POST http://localhost:3000/api/auth/sign-up/email \
+#         -H "Content-Type: application/json" \
+#         -d '{"email":"e2e@hotels.test","password":"e2e-test-pw!1","name":"E2E Test User"}'
+#     Update E2E_EMAIL/E2E_PASSWORD below if you seed different credentials.
 #   - A dev build installed on a booted simulator (`bun run ios` once), then
 #     Metro serving the bundle with the e2e flag baked in:
 #     `EXPO_PUBLIC_E2E_TEST_MODE=true bun start` on :8081. Without that env
@@ -20,6 +29,8 @@ name: Book a hotel end-to-end
 env:
   SEARCH: "Barcelona"
   API_URL: "http://localhost:3000"
+  E2E_EMAIL: "e2e@hotels.test"
+  E2E_PASSWORD: "e2e-test-pw!1"
 ---
 # No `clearState`: on iOS that's implemented as a full uninstall/reinstall
 # (see docs/logs/004-testing-setup.md), which wipes expo-dev-menu's "seen
@@ -30,17 +41,37 @@ env:
 - launchApp
 
 # expo-dev-client boots to its launcher menu; deep-link straight to the
-# Metro bundle. For a physical device, swap localhost for your Mac's LAN IP.
+# Metro bundle, landing directly on the login screen (route groups like
+# `(auth)` aren't part of the URL, so it's "/login" not "/(auth)/login").
+# For a physical device, swap localhost for your Mac's LAN IP.
 - openLink:
-    link: "hotels://expo-development-client/?url=http://localhost:8081"
+    link: "hotels://expo-development-client/?url=http://localhost:8081/login"
 
 # Defensive: dismiss expo-dev-menu's onboarding popover if it shows (e.g.
-# on a genuinely fresh install) - it otherwise covers the hotel list below.
+# on a genuinely fresh install) - it otherwise covers the login form below.
 - runFlow:
     when:
       visible: "This is the developer menu"
     commands:
       - tapOn: "Continue"
+
+# Always sign in as the dedicated e2e account, unconditionally - no
+# `clearState` means whatever session was already in this simulator (e.g.
+# your own dev login) persists across runs, and there's no logout screen
+# to force a clean slate. signIn.email overwrites the stored session, so
+# every request from here on - including the booking below - is scoped to
+# e2e@hotels.test regardless of who was logged in before this run.
+- assertVisible:
+    id: "email-input"
+- tapOn:
+    id: "email-input"
+- inputText: "${E2E_EMAIL}"
+- tapOn:
+    id: "password-input"
+- inputText: "${E2E_PASSWORD}"
+- tapOn:
+    id: "login-button"
+- assertNotVisible: "Login failed"
 
 - assertVisible:
     id: "hotel-card"

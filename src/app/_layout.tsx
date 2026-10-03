@@ -81,6 +81,7 @@ const AppContent = () => {
             <Stack screenOptions={{ headerBackButtonDisplayMode: "minimal" }}>
               {/*[info] Stack.Screen is optional, but can be used to configure the screen's options.*/}
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="map" options={{ title: "Map" }} />
               <Stack.Screen
                 name="hotel/[hotelId]"
                 options={{ title: "Hotel Details" }}

@@ -13,13 +13,6 @@ export default function RootLayout() {
           md={{ default: "explore", selected: "explore" }}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="map">
-        <NativeTabs.Trigger.Label>Map</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          sf={{ default: "map", selected: "map.fill" }}
-          md={{ default: "map", selected: "map" }}
-        />
-      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="my-bookings">
         <NativeTabs.Trigger.Label>Bookings</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
@@ -38,6 +31,16 @@ export default function RootLayout() {
             default: "heart_plus",
             selected: "heart_plus",
           }}
+        />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="account">
+        <NativeTabs.Trigger.Label>Account</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{
+            default: "person.crop.circle",
+            selected: "person.crop.circle.fill",
+          }}
+          md={{ default: "account_circle", selected: "account_circle" }}
         />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="search" role="search">
