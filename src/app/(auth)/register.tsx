@@ -30,7 +30,15 @@ export default function Register() {
   };
 
   const handleRegisterGithub = async () => {
-    const { error } = await authClient.signIn.social({ provider: "github" });
+    // Without callbackURL, BetterAuth falls back to baseURL (bare
+    // http://localhost:3000/, which has no route - 404). A relative path
+    // here is converted to a "hotels://" deep link by the Expo client
+    // plugin (src/api/authClient.ts), which is what lets the system
+    // browser hand control back to the app once GitHub redirects back.
+    const { error } = await authClient.signIn.social({
+      provider: "github",
+      callbackURL: (redirectTo as string | undefined) ?? "/",
+    });
     if (error) {
       Alert.alert("Registration failed", error.message ?? "Please try again.");
       return;
