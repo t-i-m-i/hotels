@@ -41,28 +41,39 @@ env:
 - launchApp
 
 # expo-dev-client boots to its launcher menu; deep-link straight to the
-# Metro bundle, landing directly on the login screen (route groups like
-# `(auth)` aren't part of the URL, so it's "/login" not "/(auth)/login").
-# For a physical device, swap localhost for your Mac's LAN IP.
+# Metro bundle. For a physical device, swap localhost for your Mac's LAN IP.
+# NOTE: appending a path here (e.g. ".../?url=http://localhost:8081/login")
+# does NOT set the initial route - the dev client resolves it as a plain
+# web request to Metro instead of a native deep link, which fails with
+# "codegenNativeComponent is not a function" (react-native-web trying to
+# load native-only modules). Keep this URL bare and navigate in-app instead.
 - openLink:
-    link: "hotels://expo-development-client/?url=http://localhost:8081/login"
+    link: "hotels://expo-development-client/?url=http://localhost:8081"
 
 # Defensive: dismiss expo-dev-menu's onboarding popover if it shows (e.g.
-# on a genuinely fresh install) - it otherwise covers the login form below.
+# on a genuinely fresh install) - it otherwise covers the hotel list below.
 - runFlow:
     when:
       visible: "This is the developer menu"
     commands:
       - tapOn: "Continue"
 
-# Always sign in as the dedicated e2e account, unconditionally - no
-# `clearState` means whatever session was already in this simulator (e.g.
-# your own dev login) persists across runs, and there's no logout screen
-# to force a clean slate. signIn.email overwrites the stored session, so
-# every request from here on - including the booking below - is scoped to
-# e2e@hotels.test regardless of who was logged in before this run.
 - assertVisible:
-    id: "email-input"
+    id: "hotel-card"
+
+# Always end up signed in as the dedicated e2e account, regardless of
+# whatever session already persisted in this simulator (no `clearState`,
+# see note above) - your own dev login, a stale e2e session, or logged
+# out. Go via the Account tab: log out first if something's already
+# logged in (that flips it straight to the logged-out gate), then log
+# back in as e2e. signIn.email overwrites the stored session either way.
+- tapOn: "Account"
+- runFlow:
+    when:
+      visible: "Logout"
+    commands:
+      - tapOn: "Logout"
+- tapOn: "Login"
 - tapOn:
     id: "email-input"
 - inputText: "${E2E_EMAIL}"
@@ -73,8 +84,14 @@ env:
     id: "login-button"
 - assertNotVisible: "Login failed"
 
-- assertVisible:
-    id: "hotel-card"
+# iOS offers to save the just-submitted credentials to the system Password
+# Manager - it's a system overlay, not app UI, and blocks every tap after
+# it until dismissed.
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
 
 # Explore -> Search. The search field is the pill in the bottom tab bar
 # (iOS `role="search"` native tab); tapping it focuses the field.
@@ -111,8 +128,17 @@ env:
 - tapOn:
     id: "book-button"
 
-# Redirected to My Bookings with the new booking highlighted.
-- assertVisible: "Booking confirmed!"
+# Redirected to My Bookings with the new booking highlighted. iOS merges
+# BookingListItem's sibling Text nodes ("Booking confirmed!", hotel name,
+# dates) into ONE accessibility label, comma-joined, since they sit inside
+# an accessible Pressable (correct VoiceOver behavior, not a bug) - so the
+# element's full text is "Booking confirmed!, <hotel>, <dates>", not just
+# "Booking confirmed!". Maestro's text match is a full match, not a
+# substring search, hence the trailing `.*` (same reason SEARCH below is
+# wrapped in `.*...*`).
+- extendedWaitUntil:
+    visible: "Booking confirmed!.*"
+    timeout: 20000
 - assertVisible: ".*${SEARCH}.*"
 
 # This just created a real booking in the shared demo database, tagged
