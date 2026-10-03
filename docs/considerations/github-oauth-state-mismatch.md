@@ -152,7 +152,7 @@ from `Linking.createURL(...)`) for the social path to ever actually return
 to the app on success - this hasn't been reached/tested yet since the state
 check fails first.
 
-### Options (not yet decided)
+### Options (decided and implemented)
 
 1. ~~Avoid the mobile-app push-approval step (use a TOTP code instead)~~ —
    ruled out by the log above: it failed on a ~1 second round trip with no
@@ -164,11 +164,13 @@ check fails first.
    unaffected by WebKit's cookie purging since it isn't a cookie). Given the
    cookie check is now understood to be structurally broken by WebKit's
    anti-bounce-tracking behavior for this exact redirect shape - not just a
-   tradeoff for slow 2FA - this is the clear fix. Still deliberately not
-   applied without sign-off since it does relax a defense-in-depth layer.
+   tradeoff for slow 2FA - this is the clear fix. **Applied.**
 3. Fix the `callbackURL` gap noted above regardless of (2), so a successful
    social login actually returns to the app instead of stranding the user
-   on a bare `localhost:3000` page in the browser.
+   on a bare `localhost:3000` page in the browser. **Applied** — `callbackURL`
+   (`redirectTo` from route params, defaulting to `"/"`) is now passed into
+   both `(auth)/login.tsx` and `(auth)/register.tsx`'s `signIn.social()`
+   calls.
 
 No version upgrade/downgrade is implicated - `better-auth` and
 `@better-auth/expo` are already at the same `1.7.7` in both repos, and
