@@ -1,13 +1,8 @@
 import { useBooking } from "@/api/hooks/useBookings";
+import { themeStyles } from "@/styles/themeStyles";
 import { Stack, useLocalSearchParams } from "expo-router";
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { useUnistyles } from "react-native-unistyles";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { useUnistyles, StyleSheet } from "react-native-unistyles";
 
 export default function BookingScreen() {
   const { theme } = useUnistyles();
@@ -37,10 +32,10 @@ export default function BookingScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text>{booking.id}</Text>
-        <Text>{booking.hotelId}</Text>
-        <Text>{booking.checkIn}</Text>
-        <Text>{booking.checkOut}</Text>
+        <Text style={themeStyles.text}>{booking.id}</Text>
+        <Text style={themeStyles.text}>{booking.hotelId}</Text>
+        <Text style={themeStyles.text}>{booking.checkIn}</Text>
+        <Text style={themeStyles.text}>{booking.checkOut}</Text>
       </ScrollView>
     </View>
   );

@@ -1,6 +1,7 @@
 import { authClient } from "@/api/authClient";
 import { useMyBookings } from "@/api/hooks/useBookings";
 import { BookingListItem } from "@/components/BookingListItem";
+import { themeStyles } from "@/styles/themeStyles";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Button, FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -66,7 +67,7 @@ export default function MyBookings() {
   if (isError || !bookings) {
     return (
       <View style={styles.center}>
-        <Text style={styles.themeColorsText}>
+        <Text style={themeStyles.text}>
           Couldn&apos;t load your bookings.
         </Text>
       </View>
@@ -86,7 +87,7 @@ export default function MyBookings() {
           isLoading ? (
             <ActivityIndicator style={styles.emptyState} />
           ) : (
-            <Text style={[styles.emptyState, styles.themeColorsText]}>
+            <Text style={[styles.emptyState, themeStyles.text]}>
               {isError ? "Couldn't load your bookings." : "No bookings found."}
             </Text>
           )
@@ -124,8 +125,5 @@ const styles = StyleSheet.create((theme) => ({
   emptyState: {
     marginTop: 40,
     textAlign: "center",
-  },
-  themeColorsText: {
-    color: theme.colors.text,
   },
 }));
