@@ -52,3 +52,4 @@ map. See `README.md` for the pitch and feature list.
 - When you finish a non-trivial chunk of work, add a `docs/logs/NNN-*.md`
   entry (what was done, why, anything non-obvious/gotchas) rather than
   editing an old log entry.
+- Commit messages: always a concise one-liner, no multi-paragraph bodies.
