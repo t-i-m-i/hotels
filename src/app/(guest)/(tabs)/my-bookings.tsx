@@ -38,7 +38,7 @@ export default function MyBookings() {
             onPress={() =>
               router.push({
                 pathname: "/(auth)/login",
-                params: { redirectTo: "/(tabs)/my-bookings" },
+                params: { redirectTo: "/(guest)/(tabs)/my-bookings" },
               })
             }
           />
@@ -47,7 +47,7 @@ export default function MyBookings() {
             onPress={() =>
               router.push({
                 pathname: "/(auth)/register",
-                params: { redirectTo: "/(tabs)/my-bookings" },
+                params: { redirectTo: "/(guest)/(tabs)/my-bookings" },
               })
             }
           />
@@ -67,9 +67,7 @@ export default function MyBookings() {
   if (isError || !bookings) {
     return (
       <View style={styles.center}>
-        <Text style={themeStyles.text}>
-          Couldn&apos;t load your bookings.
-        </Text>
+        <Text style={themeStyles.text}>Couldn&apos;t load your bookings.</Text>
       </View>
     );
   }

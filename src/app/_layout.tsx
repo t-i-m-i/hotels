@@ -1,5 +1,6 @@
 import "@/unistyles";
 
+import useActiveRolePersistence from "@/hooks/useActiveRolePersistence";
 import useFavoritesPersistence from "@/hooks/useFavoritesPersistence";
 import { store } from "@/store/store";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -13,7 +14,7 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useUnistyles } from "react-native-unistyles";
 import { Provider as StoreProvider } from "react-redux";
-import { authClient } from "@/api/authClient";
+import { authClient, type SessionUser } from "@/api/authClient";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,20 @@ export default function RootLayout() {
 const AppContent = () => {
   useFavoritesPersistence();
   const { theme, rt } = useUnistyles();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user as SessionUser | undefined;
+  const { activeRole, isReady: isActiveRoleReady } = useActiveRolePersistence(
+    user?.roles,
+  );
+
+  // Hold off rendering the Stack until both the session and the stored
+  // active-role preference have resolved. Rendering early (session still
+  // `undefined` mid-fetch) would momentarily evaluate every guard below as
+  // "logged out" — an already-logged-in host/admin would flash the guest
+  // tree, or the auth screens, before snapping to their real one.
+  if (isPending || !isActiveRoleReady) {
+    return null;
+  }
 
   // React Navigation's own Theme (drives native-stack header colors) — kept
   // in sync with the Unistyles theme so headers match the rest of the app
@@ -80,16 +95,34 @@ const AppContent = () => {
             {/*[info] Stack is required.*/}
             <Stack screenOptions={{ headerBackButtonDisplayMode: "minimal" }}>
               {/*[info] Stack.Screen is optional, but can be used to configure the screen's options.*/}
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="map" options={{ title: "Map" }} />
-              <Stack.Screen
-                name="hotel/[hotelId]"
-                options={{ title: "Hotel Details" }}
-              />
-              <Stack.Screen
-                name="booking/[bookingId]"
-                options={{ title: "Booking Details" }}
-              />
+
+              <Stack.Protected guard={activeRole === "admin"}>
+                <Stack.Screen name="(admin)/(tabs)" />
+              </Stack.Protected>
+
+              <Stack.Protected guard={activeRole === "host"}>
+                <Stack.Screen name="(host)/(tabs)" />
+              </Stack.Protected>
+
+              <Stack.Protected guard={!session || activeRole === "guest"}>
+                <Stack.Screen
+                  name="(guest)/(tabs)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="map" options={{ title: "Map" }} />
+                <Stack.Screen
+                  name="hotel/[hotelId]"
+                  options={{ title: "Hotel Details" }}
+                />
+                <Stack.Screen
+                  name="booking/[bookingId]"
+                  options={{ title: "Booking Details" }}
+                />
+              </Stack.Protected>
+
+              <Stack.Protected guard={!session}>
+                <Stack.Screen name="(auth)" />
+              </Stack.Protected>
             </Stack>
           </ThemeProvider>
         </BottomSheetModalProvider>

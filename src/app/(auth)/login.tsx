@@ -12,7 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const goToRedirect = () => {
-    router.replace((redirectTo as Href) ?? "/(tabs)");
+    router.replace((redirectTo as Href) ?? "/(guest)/(tabs)");
   };
 
   const handleLogin = async () => {
