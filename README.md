@@ -18,39 +18,43 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 ### Guests
 
 - discover hotels on an interactive map, browse them, and search by name or location
-- find hotels near their current location
+- find hotels near their current location 🚧
 - register
 - book a stay
-- pay online
+- pay online 🚧
 - receive booking confirmations from hosts via push notifications (i.e. even when the app is closed)
 
 ### Hosts
 
-- add and manage their own properties (hotels/apartments/rooms)
-- configure properties by rooms, number of guests, and seasonal pricing
+- add and manage their own properties (hotels/apartments/rooms) 🚧
+- configure properties by rooms, number of guests, and seasonal pricing 🚧
 - automatically track room availability (booked/free)
 - manage booking statuses (pending, confirmed, cancelled, completed, no_show)
+- multiple roles for the same identity (no need for separate guest and host accounts)
 
 ### Admin
 
-- register hosts (property owners)
-- manage properties (hotels/apartments/rooms)
+- register hosts (property owners) 🚧
+- manage properties (hotels/apartments/rooms) 🚧
 
 ## Tech stack
 
 - React Native with Expo
-- Expo Router file-based navigation [[src/app/_layout.tsx](src/app/_layout.tsx)]
-- tab navigation with native tabs [[src/app/(tabs)/_layout.tsx](<src/app/(tabs)/_layout.tsx>)]
+- Expo Router file-based navigation with role guards [[src/app/_layout.tsx](src/app/_layout.tsx)]
+- Authentication via BetterAuth
+- Tab navigation with native tabs [[src/app/(tabs)/_layout.tsx](<src/app/(tabs)/_layout.tsx>)]
 - Bottom Sheet [[src/app/hotel/[hotelId].tsx](src/app/hotel/[hotelId].tsx)]
 - FlatList backed by TanStack Infinite Query [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
-- native search with debouncing and shared list rendering [[src/app/(tabs)/search/index.tsx](<src/app/(tabs)/search/index.tsx>)]
+- Native search with debouncing and shared list rendering [[src/app/(tabs)/search/index.tsx](<src/app/(tabs)/search/index.tsx>)]
 - Redux Toolkit [[src/store/favoritesSlice.ts](src/store/favoritesSlice.ts)]
 - AsyncStorage [[src/hooks/useFavoritesPersistence.ts](src/hooks/useFavoritesPersistence.ts)]
 - Unit Testing with Jest [[src/hooks/useDateRangeSelection.test.ts](src/hooks/useDateRangeSelection.test.ts)]
 - E2E happy path testing with Maestro [[.maestro/booking-flow.yaml](.maestro/booking-flow.yaml)]
 - Location [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
-- Notifications [[src/utils/notifications.ts](src/utils/notifications.ts)]
-- Push Notifications via Firebase FCM [[src/utils/pushRegistration.ts](src/utils/pushRegistration.ts)]
+- Geolocation ("find hotels near me") and geospatial queries via
+  PostGIS behind `hotels-api` (🚧 WIP)
+- Local notifications [[src/utils/notifications.ts](src/utils/notifications.ts)]
+- Push notifications via Firebase FCM [[src/utils/pushRegistration.ts](src/utils/pushRegistration.ts)]
 - Deep linking [[src/app/_layout.tsx](src/app/_layout.tsx)]
 - Reanimated - Animated: FlatList, View, Image, Style, ScrollHandler [[src/components/CarouselItem.tsx](src/components/CarouselItem.tsx)]
 - Themes via Unistyles and ThemeProvider [[src/unistyles.ts](src/unistyles.ts)]
@@ -61,9 +65,6 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
   generated TS types to typed fetch client to domain wrappers to query
   hooks. Nothing hand-duplicates the API's shape.
 - ESLint + Prettier
-- geolocation ("find hotels near me") and geospatial queries via
-  PostGIS behind `hotels-api` (WIP)
-- authentication via BetterAuth (WIP)
 
 ## Requirements
 
