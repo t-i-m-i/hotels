@@ -96,11 +96,15 @@ const AppContent = () => {
             <Stack screenOptions={{ headerBackButtonDisplayMode: "minimal" }}>
               {/*[info] Stack.Screen is optional, but can be used to configure the screen's options.*/}
 
-              <Stack.Protected guard={activeRole === "admin"}>
+              {/* `activeRole` is a stored device preference, so it can hold
+                  a role before we know whether anyone is logged in — these
+                  guards check the session too, rather than trusting it
+                  alone. */}
+              <Stack.Protected guard={!!session && activeRole === "admin"}>
                 <Stack.Screen name="(admin)/(tabs)" />
               </Stack.Protected>
 
-              <Stack.Protected guard={activeRole === "host"}>
+              <Stack.Protected guard={!!session && activeRole === "host"}>
                 <Stack.Screen name="(host)/(tabs)" />
               </Stack.Protected>
 

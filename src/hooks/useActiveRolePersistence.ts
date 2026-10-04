@@ -34,6 +34,12 @@ export default function useActiveRolePersistence(roles: string[] | undefined) {
   const hasHydrated = useRef(false);
   const [isReady, setIsReady] = useState(false);
 
+  // Loads the stored preference *verbatim*, deliberately not resolved
+  // against `roles`. This runs on mount, when the session is still pending
+  // and `roles` is therefore undefined — resolving here would discard
+  // whatever was stored and fall straight through to the default, which is
+  // exactly the bug this shape avoids. Validation is the next effect's job,
+  // once the roles are actually known.
   useEffect(() => {
     const hydrate = async () => {
       let stored: string | null = null;
@@ -42,26 +48,34 @@ export default function useActiveRolePersistence(roles: string[] | undefined) {
       } catch (error) {
         console.error("Failed to retrieve active role from storage:", error);
       }
-      dispatch(
-        activeRoleActions.setActiveRole(resolveActiveRole(roles, stored)),
-      );
+      dispatch(activeRoleActions.setActiveRole(stored));
       hasHydrated.current = true;
       setIsReady(true);
     };
 
     hydrate();
-    // Intentionally once: `roles` arriving later (e.g. the session resolves
-    // after this first runs) is handled by the re-validation effect below.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
-  // Re-validate whenever the set of roles changes after hydration — keeps
-  // the current choice if it's still valid, otherwise re-derives a safe
-  // default (e.g. a role was revoked, or the session finished loading after
-  // the hydration effect above already ran with no roles yet).
+  // Validates the current choice once the account's real roles are known,
+  // re-deriving a default when it isn't one of them (nothing stored on a
+  // first launch, or a role that has since been revoked). Skipped entirely
+  // while `roles` is empty/undefined — that means "not loaded yet" (or
+  // logged out), not "this account has no roles", so there's nothing to
+  // validate against and clobbering the stored preference there would lose
+  // it.
+  //
+  // Neither app load nor switching roles via the UI actually trigger the
+  // dispatch below — in both cases `activeRole` is already one of `roles`,
+  // so the early return on the line above fires first. The scenario where
+  // this effect does something is `roles` shrinking out from under a role
+  // that's currently active — e.g. an admin revokes this account's host
+  // access while the device still has "host" selected; the next session
+  // refetch gives us a new `roles` without "host" in it, and this effect
+  // bounces `activeRole` back to a role the account still actually has.
   useEffect(() => {
     if (!hasHydrated.current) return;
-    if (activeRole && roles?.includes(activeRole)) return;
+    if (!roles || roles.length === 0) return;
+    if (activeRole && roles.includes(activeRole)) return;
     dispatch(
       activeRoleActions.setActiveRole(resolveActiveRole(roles, activeRole)),
     );
