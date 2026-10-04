@@ -34,8 +34,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 
 ### Admin
 
-- register hosts (property owners) 🚧
-- manage properties (hotels/apartments/rooms) 🚧
+- manage properties, hosts, guests, and bookings 🚧
 
 ## Tech stack
 
