@@ -25,3 +25,15 @@ apiClient.use({
     return request;
   },
 });
+
+// Dev-only one-line request log in the Metro terminal. Deliberately skips
+// headers (auth) and bodies. `__DEV__` is false in release bundles, so this
+// is stripped from production.
+if (__DEV__) {
+  apiClient.use({
+    onRequest({ request }) {
+      console.log(`[api] ${request.method} ${request.url}`);
+      return request;
+    },
+  });
+}
