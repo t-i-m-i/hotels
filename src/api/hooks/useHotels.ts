@@ -1,4 +1,9 @@
-import { getHotel, getHotels, getHotelsInBounds } from "@/api/hotels";
+import {
+  getHotel,
+  getHotels,
+  getHotelsInBounds,
+  getNearestHotels,
+} from "@/api/hotels";
 import { Bounds } from "@/utils/geo";
 import {
   keepPreviousData,
@@ -102,4 +107,41 @@ export function useHotelsInBounds(bounds: Bounds | null) {
   });
 
   return { hotels: data ?? [], isLoading, isError };
+}
+
+export function useNearestHotels(
+  lng: number | undefined,
+  lat: number | undefined,
+  pageSize?: number,
+) {
+  const {
+    data: hotels,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    // Every refresh returns slightly different coordinates and so creates a new cache entry - round the key to ~100m
+    queryKey: ["hotels", "nearest", lng?.toFixed(3), lat?.toFixed(3), pageSize],
+    queryFn: ({ pageParam }) =>
+      getNearestHotels(lng as number, lat as number, pageParam, pageSize),
+    enabled: lng !== undefined && lat !== undefined,
+    initialPageParam: 1,
+    placeholderData: keepPreviousData,
+    getNextPageParam: (lastPage) => {
+      const { page, pageCount } = lastPage.meta.pagination;
+      return page < pageCount ? page + 1 : undefined;
+    },
+    select: (data) => data.pages.flatMap((p) => p.data),
+  });
+
+  return {
+    hotels,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+  };
 }

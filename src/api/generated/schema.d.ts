@@ -415,6 +415,10 @@ export interface operations {
                 longitude: number;
                 /** @description Latitude */
                 latitude: number;
+                /** @description Page number */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
             };
             header?: never;
             path?: never;
@@ -427,7 +431,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HotelDto"][];
+                    "application/json": components["schemas"]["PaginatedHotelsDto"];
                 };
             };
         };

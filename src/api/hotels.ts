@@ -42,3 +42,18 @@ export async function getHotelsInBounds(bounds: Bounds): Promise<Hotel[]> {
   }
   return data;
 }
+
+export async function getNearestHotels(
+  lng: number,
+  lat: number,
+  page?: number,
+  pageSize?: number,
+): Promise<PaginatedHotels> {
+  const { data, error } = await apiClient.GET("/hotels/nearest", {
+    params: { query: { longitude: lng, latitude: lat, page, pageSize } },
+  });
+  if (error || !data) {
+    throw error ?? new Error("Failed to load nearest hotels");
+  }
+  return data;
+}

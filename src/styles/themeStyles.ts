@@ -48,4 +48,29 @@ export const themeStyles = StyleSheet.create((theme) => ({
   // border: {
   //   borderColor: theme.colors.border,
   // },
+
+  headerView: {
+    gap: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  headerLink: {
+    marginBottom: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: theme.colors.primary,
+    alignItems: "center",
+  },
+  headerLinkText: {
+    color: theme.colors.onPrimary,
+    fontWeight: "600",
+    fontSize: 15,
+  },
+
+  centerContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
