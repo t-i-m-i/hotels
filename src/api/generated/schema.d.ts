@@ -237,6 +237,11 @@ export interface components {
             geo: components["schemas"]["GeoDto"];
             /** @description Gallery images for the hotel, in display order. First entry is the cover. */
             images: components["schemas"]["HotelImageDto"][];
+            /**
+             * @description Distance in meters from the requested point. Only present on GET /hotels/nearest.
+             * @example 1250
+             */
+            distanceMeters?: number;
         };
         PaginationDto: {
             /** @example 1 */

@@ -36,3 +36,9 @@ export function bboxAround(
     center.latitude + latDelta,
   ];
 }
+
+export function formatDistance(meters: number): string {
+  if (meters < 1000) return `${Math.round(meters)} m`;
+  const km = meters / 1000;
+  return `${km < 10 ? km.toFixed(1) : Math.round(km)} km`;
+}
