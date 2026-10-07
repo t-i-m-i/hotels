@@ -35,6 +35,10 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
+  /**
+   * App receives push notification when the host confirms booking,
+   * see: https://github.com/t-i-m-i/hotels-api/blob/main/src/bookings/bookings.service.ts#L227
+   */
   useEffect(() => {
     if (!session?.user.id) return;
     registerForPushNotificationsAsync(session.user.id).catch((err: unknown) =>
