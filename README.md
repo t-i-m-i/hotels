@@ -13,7 +13,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 ### Guests
 
 - discover hotels on an interactive map, browse them, and search by name or location
-- find hotels near their current location 🚧
+- find hotels near their current location
 - register
 - book a stay
 - pay online 🚧
@@ -46,7 +46,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 - E2E happy path testing with Maestro [[.maestro/booking-flow.yaml](.maestro/booking-flow.yaml)]
 - Location [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
 - Geolocation ("find hotels near me") and geospatial queries via
-  PostGIS behind `hotels-api` (🚧 WIP)
+  PostGIS behind `hotels-api`
 - Local notifications [[src/utils/notifications.ts](src/utils/notifications.ts)]
 - Push notifications via Firebase FCM [[src/utils/pushRegistration.ts](src/utils/pushRegistration.ts)]
 - Deep linking [[src/app/_layout.tsx](src/app/_layout.tsx)]
