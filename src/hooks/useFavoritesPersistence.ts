@@ -1,20 +1,9 @@
-import { Hotel } from "@/api/hotels";
+import { hotelArraySchema } from "@/schemas/hotel";
 import { favoritesActions } from "@/store/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useRef } from "react";
-
-function isHotelArray(value: unknown): value is Hotel[] {
-  return (
-    Array.isArray(value) &&
-    value.every(
-      (item) =>
-        typeof item === "object" &&
-        item !== null &&
-        typeof (item as Hotel).id === "string",
-    )
-  );
-}
+import { z } from "zod";
 
 export default function useFavoritesPersistence() {
   const hasHydrated = useRef(false);
@@ -26,13 +15,15 @@ export default function useFavoritesPersistence() {
       try {
         const storedFavorites = await AsyncStorage.getItem("favorites");
         if (storedFavorites) {
-          const parsedFavorites: unknown = JSON.parse(storedFavorites);
-          if (isHotelArray(parsedFavorites)) {
-            dispatch(favoritesActions.setFavorites(parsedFavorites));
+          const result = hotelArraySchema.safeParse(
+            JSON.parse(storedFavorites),
+          );
+          if (result.success) {
+            dispatch(favoritesActions.setFavorites(result.data));
           } else {
             console.warn(
               "Ignoring malformed favorites data in storage:",
-              parsedFavorites,
+              z.prettifyError(result.error),
             );
           }
         }
