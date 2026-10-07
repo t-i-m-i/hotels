@@ -55,7 +55,7 @@ export default function Nearest() {
     <>
       <Stack.Screen
         options={{
-          title: "Nearest Hotels",
+          title: "Hotels near you",
         }}
       />
       <HotelList
