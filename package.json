@@ -79,6 +79,7 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "setupFiles": ["<rootDir>/jest.setup.ts"],
     "moduleNameMapper": {
       "^@/assets/(.*)$": "<rootDir>/assets/$1",
       "^@/(.*)$": "<rootDir>/src/$1"
