@@ -2,9 +2,9 @@
 
 A mobile app for discovering hotels, built as a portfolio project to demonstrate mobile app development in **React Native with Expo**.
 
-<img width="320" alt="Image" src="https://github.com/user-attachments/assets/1a813f37-b3c2-4fd3-99ee-2f6e8d28b2ae" />
-<img width="320" alt="Image" src="https://github.com/user-attachments/assets/3620e546-a52f-47e1-88fb-33a748cc510d" />
-<img width="320" alt="Image" src="https://github.com/user-attachments/assets/51701083-dbe7-4e95-a964-3da48dbf3212" />
+<img width="278" alt="Image" src="https://github.com/user-attachments/assets/1a813f37-b3c2-4fd3-99ee-2f6e8d28b2ae" />
+<img width="278" alt="Image" src="https://github.com/user-attachments/assets/3620e546-a52f-47e1-88fb-33a748cc510d" />
+<img width="278" alt="Image" src="https://github.com/user-attachments/assets/51701083-dbe7-4e95-a964-3da48dbf3212" />
 
 ## Features
 
