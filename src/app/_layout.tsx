@@ -105,11 +105,17 @@ const AppContent = () => {
                   guards check the session too, rather than trusting it
                   alone. */}
               <Stack.Protected guard={!!session && activeRole === "admin"}>
-                <Stack.Screen name="(admin)/(tabs)" />
+                <Stack.Screen
+                  name="(admin)/(tabs)"
+                  options={{ headerShown: false }}
+                />
               </Stack.Protected>
 
               <Stack.Protected guard={!!session && activeRole === "host"}>
-                <Stack.Screen name="(host)/(tabs)" />
+                <Stack.Screen
+                  name="(host)/(tabs)"
+                  options={{ headerShown: false }}
+                />
               </Stack.Protected>
 
               <Stack.Protected guard={!session || activeRole === "guest"}>

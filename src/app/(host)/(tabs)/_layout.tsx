@@ -6,7 +6,7 @@ export default function HostTabsLayout() {
   return (
     <NativeTabs iconColor={{ selected: theme.colors.primary }}>
       <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Index</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Bookings</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: "safari", selected: "safari.fill" }}
           md={{ default: "explore", selected: "explore" }}
