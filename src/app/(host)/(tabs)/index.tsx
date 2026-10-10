@@ -2,7 +2,7 @@ import { useHostBookings } from "@/api/hooks/useBookings";
 import { BookingsHotel } from "@/components/host/BookingsHotel";
 import { useSessionUser } from "@/hooks/useSessionUser";
 import { themeStyles } from "@/styles/themeStyles";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -13,26 +13,22 @@ export default function Index() {
   // Only the frame after sign-out; the root layout guarantees a session.
   if (!user) return null;
 
-  if (isLoading) {
-    return <ActivityIndicator style={styles.center} />;
-  }
-
-  if (isError || !bookings) {
-    return (
-      <View style={styles.center}>
-        <Text style={themeStyles.text}>Couldn&apos;t load your bookings.</Text>
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      {/* <Text style={themeStyles.text}>{JSON.stringify(bookings, null, 2)}</Text> */}
       <FlatList
-        data={bookings}
+        data={bookings ?? []}
         renderItem={({ item }) => <BookingsHotel hotel={item} />}
         keyExtractor={(item) => item.hotelId}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator style={styles.empty} />
+          ) : (
+            <Text style={[themeStyles.text, styles.empty]}>
+              {isError ? "Couldn't load your bookings." : "No bookings yet."}
+            </Text>
+          )
+        }
       />
     </SafeAreaView>
   );
@@ -46,11 +42,8 @@ const styles = StyleSheet.create((theme) => ({
     padding: 16,
     gap: 24,
   },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    paddingHorizontal: 24,
+  empty: {
+    marginTop: 40,
+    textAlign: "center",
   },
 }));
