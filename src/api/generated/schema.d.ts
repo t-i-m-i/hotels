@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/bookings/host/{hostId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["BookingsController_getByHost"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/bookings/{id}": {
         parameters: {
             query?: never;
@@ -298,6 +314,27 @@ export interface components {
             user: components["schemas"]["BookingUserSummaryDto"];
             checkIn: string;
             checkOut: string;
+            /**
+             * @example pending
+             * @enum {string}
+             */
+            status: "pending" | "confirmed" | "cancelled" | "completed" | "no_show";
+        };
+        HostBookingDto: {
+            id: string;
+            user: components["schemas"]["BookingUserSummaryDto"];
+            checkIn: string;
+            checkOut: string;
+            /**
+             * @example pending
+             * @enum {string}
+             */
+            status: "pending" | "confirmed" | "cancelled" | "completed" | "no_show";
+        };
+        HostHotelBookingsDto: {
+            hotelId: string;
+            hotelName: string;
+            bookings: components["schemas"]["HostBookingDto"][];
         };
         UpdateBookingDto: {
             /** @example 38dca5bd-0417-4971-baee-056e1aa3ce21 */
@@ -566,6 +603,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BookingDetailsDto"][];
+                };
+            };
+        };
+    };
+    BookingsController_getByHost: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                hostId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostHotelBookingsDto"][];
                 };
             };
         };

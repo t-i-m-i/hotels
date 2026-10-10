@@ -4,6 +4,8 @@ import type { components } from "@/api/generated/schema";
 export type Booking = components["schemas"]["BookingDto"];
 export type BookingDetails = components["schemas"]["BookingDetailsDto"];
 export type CreateBookingDto = components["schemas"]["CreateBookingDto"];
+export type HostHotelBookingsDto = components["schemas"]["HostHotelBookingsDto"];
+export type HostBookingDto = components["schemas"]["HostBookingDto"];
 
 function toError(error: unknown, fallbackMessage: string): Error {
   if (error instanceof Error) {
@@ -46,6 +48,16 @@ export async function getBookingsByUser(
   });
   if (error || !data) {
     throw toError(error, `Bookings for user with id "${userId}" not found`);
+  }
+  return data;
+}
+
+export async function getByHost(hostId: string): Promise<HostHotelBookingsDto[]> {
+  const { data, error } = await apiClient.GET("/bookings/host/{hostId}", {
+    params: { path: { hostId } },
+  });
+  if (error || !data) {
+    throw toError(error, `Bookings for host with id "${hostId}" not found`);
   }
   return data;
 }

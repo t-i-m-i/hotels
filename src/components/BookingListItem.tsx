@@ -1,12 +1,8 @@
 import type { BookingDetails } from "@/api/bookings";
-import { getLocalDateString } from "@/utils/dateRange";
+import { BookingPhase, getBookingPhase } from "@/utils/bookingPhase";
 import { Link } from "expo-router";
 import { Pressable, Text } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-
-function isPastBooking(checkOut: string): boolean {
-  return checkOut < getLocalDateString();
-}
 
 export function BookingListItem({
   bookingDetails,
@@ -15,7 +11,9 @@ export function BookingListItem({
   bookingDetails: BookingDetails;
   newBookingId: string | undefined;
 }) {
-  const isPast = isPastBooking(bookingDetails.checkOut);
+  const isPast =
+    getBookingPhase(bookingDetails.checkIn, bookingDetails.checkOut) ===
+    BookingPhase.PAST;
 
   return (
     <Link

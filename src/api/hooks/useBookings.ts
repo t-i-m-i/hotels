@@ -1,6 +1,7 @@
 import {
   getBooking,
   getBookingsByUser,
+  getByHost,
   getCurrentBookingsByHotel,
   submitBooking,
 } from "@/api/bookings";
@@ -11,6 +12,8 @@ export const bookingKeys = {
     ["current-bookings-by-hotel", hotelId] as const,
   bookingsByUser: (userId: string | undefined) =>
     ["bookings-by-user", userId] as const,
+  bookingsByHost: (hostId: string | undefined) =>
+    ["bookings-by-host", hostId] as const,
 };
 
 export function useCurrentBookingsByHotel(hotelId: string | undefined) {
@@ -42,6 +45,14 @@ export function useMyBookings(userId: string | undefined) {
     queryFn: () => getBookingsByUser(userId as string),
     enabled: !!userId,
     retry: false,
+  });
+}
+
+export function useHostBookings(hostId: string | undefined) {
+  return useQuery({
+    queryKey: bookingKeys.bookingsByHost(hostId),
+    queryFn: () => getByHost(hostId as string),
+    enabled: !!hostId,
   });
 }
 
