@@ -1,22 +1,14 @@
-import { authClient, type SessionUser } from "@/api/authClient";
 import AccountActions from "@/components/AccountActions";
-import { ActivityIndicator, Text, View } from "react-native";
+import { useSessionUser } from "@/hooks/useSessionUser";
+import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function HostAccount() {
-  const { data: session, isPending: isSessionPending } =
-    authClient.useSession();
+  const user = useSessionUser();
 
-  if (isSessionPending || !session) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
-  const user = session.user as SessionUser;
+  // Only the frame after sign-out; the root layout guarantees a session.
+  if (!user) return null;
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>

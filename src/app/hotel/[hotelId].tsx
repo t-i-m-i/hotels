@@ -12,7 +12,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
-import { authClient } from "@/api/authClient";
 import {
   useCreateBooking,
   useCurrentBookingsByHotel,
@@ -22,6 +21,7 @@ import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
+import { useSessionUser } from "@/hooks/useSessionUser";
 import { bboxAround, type Bounds } from "@/utils/geo";
 import { scheduleBookingConfirmedNotification } from "@/utils/notifications";
 
@@ -30,8 +30,7 @@ export default function HotelScreen() {
   const { data: hotel, isLoading, isError } = useHotel(hotelId);
   const { data: bookings } = useCurrentBookingsByHotel(hotelId);
   const router = useRouter();
-  const { data: session, isPending: isSessionPending } =
-    authClient.useSession();
+  const user = useSessionUser();
 
   // Seed the map with a bbox around the hotel (nearby behaviour, matches
   // web); once the user pans, the viewport they chose takes over.
@@ -69,10 +68,7 @@ export default function HotelScreen() {
     if (!hotel || !selectedRange.start || !selectedRange.end) {
       return;
     }
-    if (isSessionPending) {
-      return;
-    }
-    if (!session) {
+    if (!user) {
       router.push({
         pathname: "/(auth)/login",
         params: {

@@ -1,21 +1,19 @@
-import { authClient } from "@/api/authClient";
 import { useHostBookings } from "@/api/hooks/useBookings";
 import { BookingsHotel } from "@/components/host/BookingsHotel";
+import { useSessionUser } from "@/hooks/useSessionUser";
 import { themeStyles } from "@/styles/themeStyles";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function Index() {
-  const { data: session, isPending: isSessionPending } =
-    authClient.useSession();
-  const {
-    data: bookings,
-    isLoading,
-    isError,
-  } = useHostBookings(session?.user.id);
+  const user = useSessionUser();
+  const { data: bookings, isLoading, isError } = useHostBookings(user?.id);
 
-  if (isSessionPending || isLoading) {
+  // Only the frame after sign-out; the root layout guarantees a session.
+  if (!user) return null;
+
+  if (isLoading) {
     return <ActivityIndicator style={styles.center} />;
   }
 

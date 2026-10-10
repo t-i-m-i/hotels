@@ -1,7 +1,7 @@
-import { authClient, type SessionUser } from "@/api/authClient";
 import AccountActions from "@/components/AccountActions";
-import { useRouter } from "expo-router";
-import { ActivityIndicator, Button, Text, View } from "react-native";
+import LoginPrompt from "@/components/LoginPrompt";
+import { useSessionUser } from "@/hooks/useSessionUser";
+import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -14,49 +14,17 @@ function splitName(name: string | undefined) {
 }
 
 export default function Account() {
-  const router = useRouter();
-  const { data: session, isPending: isSessionPending } =
-    authClient.useSession();
+  const user = useSessionUser();
 
-  if (isSessionPending) {
+  if (!user) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-      </View>
+      <LoginPrompt
+        message="Please login to view your account"
+        redirectTo="/(guest)/(tabs)/account"
+      />
     );
   }
 
-  if (!session) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.loggedOutText}>
-          Please login to view your account
-        </Text>
-        <View style={styles.loggedOutButtons}>
-          <Button
-            title="Login"
-            onPress={() =>
-              router.push({
-                pathname: "/(auth)/login",
-                params: { redirectTo: "/(guest)/(tabs)/account" },
-              })
-            }
-          />
-          <Button
-            title="Register"
-            onPress={() =>
-              router.push({
-                pathname: "/(auth)/register",
-                params: { redirectTo: "/(guest)/(tabs)/account" },
-              })
-            }
-          />
-        </View>
-      </View>
-    );
-  }
-
-  const user = session.user as SessionUser;
   const { firstName, lastName } = splitName(user.name);
 
   return (
@@ -88,22 +56,6 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     padding: 16,
     gap: 16,
-  },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
-    paddingHorizontal: 24,
-  },
-  loggedOutText: {
-    textAlign: "center",
-    fontSize: 16,
-    color: theme.colors.text,
-  },
-  loggedOutButtons: {
-    flexDirection: "row",
-    gap: 12,
   },
   field: {
     gap: 2,
