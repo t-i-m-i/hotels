@@ -10,11 +10,11 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
 
   return (
     <View
-      style={StyleSheet.flatten([
+      style={[
         styles.card,
         isPast && styles.cardPast,
         isActive && styles.cardActive,
-      ])}
+      ]}
     >
       <View style={styles.header}>
         <Text style={[styles.guest, isPast && styles.textPast]}>

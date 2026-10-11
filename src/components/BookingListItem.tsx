@@ -24,11 +24,11 @@ export function BookingListItem({
       asChild
     >
       <Pressable
-        style={StyleSheet.flatten([
+        style={[
           styles.card,
           isPast && styles.cardPast,
           newBookingId === bookingDetails.id && styles.cardNew,
-        ])}
+        ]}
       >
         {newBookingId === bookingDetails.id && (
           <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
