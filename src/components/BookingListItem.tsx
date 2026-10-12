@@ -1,6 +1,6 @@
 import type { BookingDetails } from "@/api/bookings";
 import { BookingPhase, getBookingPhase } from "@/utils/bookingPhase";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { Pressable, Text } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -11,36 +11,36 @@ export function BookingListItem({
   bookingDetails: BookingDetails;
   newBookingId: string | undefined;
 }) {
+  const router = useRouter();
   const isPast =
     getBookingPhase(bookingDetails.checkIn, bookingDetails.checkOut) ===
     BookingPhase.PAST;
 
   return (
-    <Link
-      href={{
-        pathname: "/booking/[bookingId]",
-        params: { bookingId: bookingDetails.id },
-      }}
-      asChild
+    <Pressable
+      // Not <Link asChild>: Slot rejects array styles, and flattening breaks Unistyles.
+      onPress={() =>
+        router.push({
+          pathname: "/booking/[bookingId]",
+          params: { bookingId: bookingDetails.id },
+        })
+      }
+      style={[
+        styles.card,
+        isPast && styles.cardPast,
+        newBookingId === bookingDetails.id && styles.cardNew,
+      ]}
     >
-      <Pressable
-        style={[
-          styles.card,
-          isPast && styles.cardPast,
-          newBookingId === bookingDetails.id && styles.cardNew,
-        ]}
-      >
-        {newBookingId === bookingDetails.id && (
-          <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
-        )}
-        <Text style={[styles.hotelName, isPast && styles.textPast]}>
-          {bookingDetails.hotel.name}
-        </Text>
-        <Text style={[styles.dates, isPast && styles.textPast]}>
-          {bookingDetails.checkIn} – {bookingDetails.checkOut}
-        </Text>
-      </Pressable>
-    </Link>
+      {newBookingId === bookingDetails.id && (
+        <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
+      )}
+      <Text style={[styles.hotelName, isPast && styles.textPast]}>
+        {bookingDetails.hotel.name}
+      </Text>
+      <Text style={[styles.dates, isPast && styles.textPast]}>
+        {bookingDetails.checkIn} – {bookingDetails.checkOut}
+      </Text>
+    </Pressable>
   );
 }
 
