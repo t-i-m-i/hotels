@@ -135,7 +135,10 @@ const AppContent = () => {
               </Stack.Protected>
 
               <Stack.Protected guard={!session}>
-                <Stack.Screen name="(auth)" />
+                {/* `(auth)` has no _layout, so its screens register
+                    individually rather than as a "(auth)" group. */}
+                <Stack.Screen name="(auth)/login" />
+                <Stack.Screen name="(auth)/register" />
               </Stack.Protected>
             </Stack>
           </ThemeProvider>
