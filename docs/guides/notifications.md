@@ -58,3 +58,18 @@ gitignored and not shared.
    push capability is needed — plain iOS Simulators cannot receive real
    APNs pushes (Android emulators with Google Play services can receive
    FCM).
+
+## Device builds on a free Apple account
+
+Free "personal team" accounts can't provision the Push Notifications
+capability, so a signed device build fails if the `aps-environment`
+entitlement is present. `app.config.ts` strips `aps-environment` from the entitlements
+when `PUSH=0` (removing the plugin from `app.json` is not enough:
+prebuild-config auto-applies it whenever the package is installed) and sets `extra.pushEnabled`, which `pushRegistration.ts`
+checks before registering.
+
+- `bun run ios` — simulator, push plugin on (prebuild `--clean` every time).
+- `bun run ios:device` — cable install, `PUSH=0`, no remote push (local
+  notifications still work).
+- After the first `ios:device`, `bun run start` + the dev client gives hot
+  reload on the phone. Re-run the matching script only for native changes.

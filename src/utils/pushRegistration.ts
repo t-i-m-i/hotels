@@ -1,4 +1,5 @@
 import { registerPushToken } from "@/api/pushTokens";
+import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
@@ -16,6 +17,11 @@ export async function registerForPushNotificationsAsync(
 ): Promise<void> {
   if (!Device.isDevice) {
     // Push tokens are unreliable/unavailable on most simulators.
+    return;
+  }
+
+  if (Constants.expoConfig?.extra?.pushEnabled === false) {
+    // Built via `bun run ios:device` without the push entitlement.
     return;
   }
 
