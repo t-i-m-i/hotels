@@ -2,12 +2,7 @@ import type { Hotel } from "@/api/hotels";
 import { favoritesActions, selectIsFavorite } from "@/store/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { SymbolView } from "expo-symbols";
-import {
-  GestureResponderEvent,
-  Pressable,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { GestureResponderEvent, Pressable } from "react-native";
 
 export default function FavoriteButton({ hotel }: { hotel: Hotel }) {
   const isFavorite = useAppSelector((state) =>
@@ -31,18 +26,14 @@ export default function FavoriteButton({ hotel }: { hotel: Hotel }) {
       }
     >
       <SymbolView
-        name={isFavorite ? "heart.fill" : "heart"}
+        name={
+          isFavorite
+            ? { ios: "heart.fill", android: "favorite" }
+            : { ios: "heart", android: "favorite_border" }
+        }
         size={22}
         tintColor={isFavorite ? "#FF3B30" : "#8E8E93"}
-        fallback={<Text style={styles.fallback}>{isFavorite ? "♥" : "♡"}</Text>}
       />
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  fallback: {
-    fontSize: 20,
-    lineHeight: 22,
-  },
-});
