@@ -4,9 +4,11 @@ import type { components } from "@/api/generated/schema";
 export type BookingDto = components["schemas"]["BookingDto"];
 export type BookingDetails = components["schemas"]["BookingDetailsDto"];
 export type CreateBookingDto = components["schemas"]["CreateBookingDto"];
-export type HostHotelBookingsDto = components["schemas"]["HostHotelBookingsDto"];
+export type HostHotelBookingsDto =
+  components["schemas"]["HostHotelBookingsDto"];
 export type HostBookingDto = components["schemas"]["HostBookingDto"];
-export type UpdateBookingStatusDto = components["schemas"]["UpdateBookingStatusDto"];
+export type UpdateBookingStatusDto =
+  components["schemas"]["UpdateBookingStatusDto"];
 
 function toError(error: unknown, fallbackMessage: string): Error {
   if (error instanceof Error) {
@@ -33,7 +35,9 @@ export async function getCurrentBookingsByHotel(
   return data;
 }
 
-export async function submitBooking(body: CreateBookingDto): Promise<BookingDto> {
+export async function submitBooking(
+  body: CreateBookingDto,
+): Promise<BookingDto> {
   const { data, error } = await apiClient.POST("/bookings", { body });
   if (error || !data) {
     throw toError(error, "Failed to create booking");
@@ -41,7 +45,10 @@ export async function submitBooking(body: CreateBookingDto): Promise<BookingDto>
   return data;
 }
 
-export async function updateBookingStatus(id: string, body: UpdateBookingStatusDto): Promise<BookingDto> {
+export async function updateBookingStatus(
+  id: string,
+  body: UpdateBookingStatusDto,
+): Promise<BookingDto> {
   const { data, error } = await apiClient.PATCH("/bookings/{id}/status", {
     params: { path: { id } },
     body,
@@ -64,7 +71,9 @@ export async function getBookingsByUser(
   return data;
 }
 
-export async function getByHost(hostId: string): Promise<HostHotelBookingsDto[]> {
+export async function getByHost(
+  hostId: string,
+): Promise<HostHotelBookingsDto[]> {
   const { data, error } = await apiClient.GET("/bookings/host/{hostId}", {
     params: { path: { hostId } },
   });

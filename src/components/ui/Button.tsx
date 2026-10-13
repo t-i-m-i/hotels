@@ -24,7 +24,7 @@ export function Button({
         pressed && styles.pressed,
       ]}
     >
-      <Text style={[styles.text, { fontSize: fontSize }]}>{title}</Text>
+      <Text style={[styles.text, { fontSize }]}>{title}</Text>
     </Pressable>
   );
 }

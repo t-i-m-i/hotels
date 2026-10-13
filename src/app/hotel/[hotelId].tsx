@@ -20,6 +20,7 @@ import { useHotel, useHotelsInBounds } from "@/api/hooks/useHotels";
 import HotelBookingSheet from "@/components/HotelBookingSheet";
 import HotelDetails from "@/components/HotelDetails";
 import HotelMap from "@/components/HotelMap";
+import { ErrorText } from "@/components/ui/ErrorText";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import { useSessionUser } from "@/hooks/useSessionUser";
 import { bboxAround, type Bounds } from "@/utils/geo";
@@ -140,9 +141,7 @@ export default function HotelScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
-        {bookingError && (
-          <Text style={styles.errorMessageText}>{bookingError.message}</Text>
-        )}
+        {bookingError && <ErrorText message={bookingError.message} />}
         <Pressable
           testID="book-button"
           disabled={!selectedRange.start || !selectedRange.end || isBooking}
@@ -215,12 +214,6 @@ const styles = StyleSheet.create((theme) => ({
   bookButtonText: {
     color: theme.colors.onPrimary,
     fontSize: 17,
-    fontWeight: "600",
-  },
-
-  // todo: DRY
-  errorMessageText: {
-    color: theme.colors.primary,
     fontWeight: "600",
   },
 }));

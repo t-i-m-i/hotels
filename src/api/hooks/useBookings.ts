@@ -5,7 +5,7 @@ import {
   getCurrentBookingsByHotel,
   submitBooking,
   updateBookingStatus,
-  UpdateBookingStatusDto,
+  type UpdateBookingStatusDto,
 } from "@/api/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -47,7 +47,7 @@ export function useUpdateStatus(hostId: string | undefined) {
   return useMutation({
     // updateBookingStatus wants 2 arguments - so there is a need for adapter step where the object is split into (id, body)
     mutationFn: ({
-      id, 
+      id,
       status,
     }: {
       id: string;

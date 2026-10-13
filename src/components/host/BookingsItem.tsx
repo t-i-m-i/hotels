@@ -1,6 +1,7 @@
 import type { HostBookingDto, UpdateBookingStatusDto } from "@/api/bookings";
 import { useUpdateStatus } from "@/api/hooks/useBookings";
 import { Button } from "@/components/ui/Button";
+import { ErrorText } from "@/components/ui/ErrorText";
 import { useSessionUser } from "@/hooks/useSessionUser";
 import { BookingPhase, getBookingPhase } from "@/utils/bookingPhase";
 import { Text, View } from "react-native";
@@ -17,11 +18,17 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
   const {
     mutate: mutateStatus,
     isPending: isUpdatingStatus,
+    variables,
     error: updateStatusError,
   } = useUpdateStatus(user?.id);
 
   const handleUpdateStatus = (status: UpdateBookingStatusDto["status"]) => {
     mutateStatus({ id: booking.id, status });
+  };
+
+  const isUpdating = (status: UpdateBookingStatusDto["status"]) => {
+    // variables stays set after the request finishes, so always combine it with isPending
+    return isUpdatingStatus && variables?.status === status;
   };
 
   return (
@@ -46,17 +53,15 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
       {isActive && <Text style={styles.phaseLabel}>Staying now</Text>}
       <Text style={styles.id}>{booking.id}</Text>
 
-      {updateStatusError && (
-        <Text style={styles.errorMessageText}>
-          {updateStatusError.message}
-        </Text>
-      )}
+      {updateStatusError && <ErrorText message={updateStatusError.message} />}
 
       {booking.status === "pending" && (isUpcoming || isActive) && (
         <>
           <View style={styles.buttonContainer}>
             <Button
-              title={isUpdatingStatus ? "Updating..." : "Confirm Booking"}
+              title={
+                isUpdating("confirmed") ? "Updating..." : "Confirm Booking"
+              }
               onPress={() => handleUpdateStatus("confirmed")}
               isPending={isUpdatingStatus}
               fontSize={14}
@@ -64,7 +69,7 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
           </View>
           <View style={styles.buttonContainer}>
             <Button
-              title={isUpdatingStatus ? "Updating..." : "Cancel Booking"}
+              title={isUpdating("cancelled") ? "Updating..." : "Cancel Booking"}
               onPress={() => handleUpdateStatus("cancelled")}
               isPending={isUpdatingStatus}
               fontSize={14}
@@ -75,17 +80,18 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
       {booking.status === "confirmed" && (isActive || isUpcoming) && (
         <View style={styles.buttonContainer}>
           <Button
-            title={isUpdatingStatus ? "Updating..." : "Cancel Booking"}
+            title={isUpdating("cancelled") ? "Updating..." : "Cancel Booking"}
             onPress={() => handleUpdateStatus("cancelled")}
             isPending={isUpdatingStatus}
             fontSize={14}
           />
         </View>
       )}
-      {booking.status === "confirmed" && (isActive || isPast) && (
+      {/* backend turns confirmed into completed once check_out < today, so all past bookings are completed and can't be set as no_show, as completed is one of the terminal states */}
+      {booking.status === "confirmed" && isActive && (
         <View style={styles.buttonContainer}>
           <Button
-            title={isUpdatingStatus ? "Updating..." : "Set as No Show"}
+            title={isUpdating("no_show") ? "Updating..." : "Set as No Show"}
             onPress={() => handleUpdateStatus("no_show")}
             isPending={isUpdatingStatus}
             fontSize={14}
@@ -149,9 +155,5 @@ const styles = StyleSheet.create((theme) => ({
   },
   buttonContainer: {
     marginTop: 16,
-  },
-  errorMessageText: {
-    color: theme.colors.primary,
-    fontWeight: "600",
   },
 }));
