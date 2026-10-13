@@ -1,4 +1,7 @@
-import type { HostBookingDto } from "@/api/bookings";
+import type { HostBookingDto, UpdateBookingStatusDto } from "@/api/bookings";
+import { useUpdateStatus } from "@/api/hooks/useBookings";
+import { Button } from "@/components/ui/Button";
+import { useSessionUser } from "@/hooks/useSessionUser";
 import { BookingPhase, getBookingPhase } from "@/utils/bookingPhase";
 import { Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -7,6 +10,19 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
   const phase = getBookingPhase(booking.checkIn, booking.checkOut);
   const isPast = phase === BookingPhase.PAST;
   const isActive = phase === BookingPhase.ACTIVE;
+  const isUpcoming = phase === BookingPhase.UPCOMING;
+
+  // Update booking status
+  const user = useSessionUser();
+  const {
+    mutate: mutateStatus,
+    isPending: isUpdatingStatus,
+    error: updateStatusError,
+  } = useUpdateStatus(user?.id);
+
+  const handleUpdateStatus = (status: UpdateBookingStatusDto["status"]) => {
+    mutateStatus({ id: booking.id, status });
+  };
 
   return (
     <View
@@ -29,6 +45,53 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
       </Text>
       {isActive && <Text style={styles.phaseLabel}>Staying now</Text>}
       <Text style={styles.id}>{booking.id}</Text>
+
+      {updateStatusError && (
+        <Text style={styles.errorMessageText}>
+          {updateStatusError.message}
+        </Text>
+      )}
+
+      {booking.status === "pending" && (isUpcoming || isActive) && (
+        <>
+          <View style={styles.buttonContainer}>
+            <Button
+              title={isUpdatingStatus ? "Updating..." : "Confirm Booking"}
+              onPress={() => handleUpdateStatus("confirmed")}
+              isPending={isUpdatingStatus}
+              fontSize={14}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              title={isUpdatingStatus ? "Updating..." : "Cancel Booking"}
+              onPress={() => handleUpdateStatus("cancelled")}
+              isPending={isUpdatingStatus}
+              fontSize={14}
+            />
+          </View>
+        </>
+      )}
+      {booking.status === "confirmed" && (isActive || isUpcoming) && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title={isUpdatingStatus ? "Updating..." : "Cancel Booking"}
+            onPress={() => handleUpdateStatus("cancelled")}
+            isPending={isUpdatingStatus}
+            fontSize={14}
+          />
+        </View>
+      )}
+      {booking.status === "confirmed" && (isActive || isPast) && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title={isUpdatingStatus ? "Updating..." : "Set as No Show"}
+            onPress={() => handleUpdateStatus("no_show")}
+            isPending={isUpdatingStatus}
+            fontSize={14}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -83,5 +146,12 @@ const styles = StyleSheet.create((theme) => ({
   },
   textPast: {
     color: theme.colors.textMuted,
+  },
+  buttonContainer: {
+    marginTop: 16,
+  },
+  errorMessageText: {
+    color: theme.colors.primary,
+    fontWeight: "600",
   },
 }));

@@ -1,7 +1,7 @@
 /// <reference types="jest" />
 import { act, renderHook } from "@testing-library/react-native";
 
-import type { Booking } from "@/api/bookings";
+import type { BookingDto } from "@/api/bookings";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 
 // Minimal DateData shape - handleDayPress only reads `dateString`.
@@ -13,7 +13,9 @@ const day = (dateString: string) => ({
   timestamp: Date.parse(dateString),
 });
 
-const booked = [{ checkIn: "2026-02-12", checkOut: "2026-02-15" } as Booking];
+const booked = [
+  { checkIn: "2026-02-12", checkOut: "2026-02-15" } as BookingDto,
+];
 
 describe("useDateRangeSelection", () => {
   it("sets the check-in on the first press", async () => {

@@ -140,11 +140,8 @@ export default function HotelScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
-        {/*{isBooked && (
-          <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
-        )}*/}
         {bookingError && (
-          <Text style={styles.bookingErrorText}>{bookingError.message}</Text>
+          <Text style={styles.errorMessageText}>{bookingError.message}</Text>
         )}
         <Pressable
           testID="book-button"
@@ -220,11 +217,9 @@ const styles = StyleSheet.create((theme) => ({
     fontSize: 17,
     fontWeight: "600",
   },
-  bookingConfirmedText: {
-    color: theme.colors.accent,
-    fontWeight: "600",
-  },
-  bookingErrorText: {
+
+  // todo: DRY
+  errorMessageText: {
     color: theme.colors.primary,
     fontWeight: "600",
   },

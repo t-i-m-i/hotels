@@ -4,6 +4,8 @@ import {
   getByHost,
   getCurrentBookingsByHotel,
   submitBooking,
+  updateBookingStatus,
+  UpdateBookingStatusDto,
 } from "@/api/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -27,10 +29,33 @@ export function useCurrentBookingsByHotel(hotelId: string | undefined) {
 export function useCreateBooking(hotelId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
+    // mutate passes one object (body) - no need for an adapter
     mutationFn: submitBooking,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: bookingKeys.currentByHotel(hotelId),
+      });
+    },
+    onError: (error) => {
+      console.error(error.message);
+    },
+  });
+}
+
+export function useUpdateStatus(hostId: string | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    // updateBookingStatus wants 2 arguments - so there is a need for adapter step where the object is split into (id, body)
+    mutationFn: ({
+      id, 
+      status,
+    }: {
+      id: string;
+      status: UpdateBookingStatusDto["status"];
+    }) => updateBookingStatus(id, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: bookingKeys.bookingsByHost(hostId),
       });
     },
     onError: (error) => {

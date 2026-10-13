@@ -1,4 +1,4 @@
-import { Booking } from "@/api/bookings";
+import { BookingDto } from "@/api/bookings";
 import { getDatesInRange } from "@/utils/dateRange";
 import { useMemo, useState } from "react";
 import { DateData, MarkedDates } from "react-native-calendars/src/types";
@@ -10,7 +10,7 @@ export default function useDateRangeSelection({
   bookings,
   onRangeComplete,
 }: {
-  bookings?: Booking[];
+  bookings?: BookingDto[];
   onRangeComplete?: () => void;
 }) {
   const { theme } = useUnistyles();

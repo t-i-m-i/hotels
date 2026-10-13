@@ -1,11 +1,12 @@
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
-export type Booking = components["schemas"]["BookingDto"];
+export type BookingDto = components["schemas"]["BookingDto"];
 export type BookingDetails = components["schemas"]["BookingDetailsDto"];
 export type CreateBookingDto = components["schemas"]["CreateBookingDto"];
 export type HostHotelBookingsDto = components["schemas"]["HostHotelBookingsDto"];
 export type HostBookingDto = components["schemas"]["HostBookingDto"];
+export type UpdateBookingStatusDto = components["schemas"]["UpdateBookingStatusDto"];
 
 function toError(error: unknown, fallbackMessage: string): Error {
   if (error instanceof Error) {
@@ -22,7 +23,7 @@ function toError(error: unknown, fallbackMessage: string): Error {
 
 export async function getCurrentBookingsByHotel(
   hotelId: string,
-): Promise<Booking[]> {
+): Promise<BookingDto[]> {
   const { data, error } = await apiClient.GET("/bookings/hotel/{hotelId}", {
     params: { path: { hotelId } },
   });
@@ -32,10 +33,21 @@ export async function getCurrentBookingsByHotel(
   return data;
 }
 
-export async function submitBooking(body: CreateBookingDto): Promise<Booking> {
+export async function submitBooking(body: CreateBookingDto): Promise<BookingDto> {
   const { data, error } = await apiClient.POST("/bookings", { body });
   if (error || !data) {
     throw toError(error, "Failed to create booking");
+  }
+  return data;
+}
+
+export async function updateBookingStatus(id: string, body: UpdateBookingStatusDto): Promise<BookingDto> {
+  const { data, error } = await apiClient.PATCH("/bookings/{id}/status", {
+    params: { path: { id } },
+    body,
+  });
+  if (error || !data) {
+    throw toError(error, "Failed to update booking status");
   }
   return data;
 }
@@ -64,7 +76,7 @@ export async function getByHost(hostId: string): Promise<HostHotelBookingsDto[]>
 
 // TODO refactor API to return BookingDetails instead of Booking for this endpoint
 // TODO guard in API to ensure that the user can only access their own bookings
-export async function getBooking(id: string): Promise<Booking> {
+export async function getBooking(id: string): Promise<BookingDto> {
   const { data, error } = await apiClient.GET("/bookings/{id}", {
     params: { path: { id } },
   });

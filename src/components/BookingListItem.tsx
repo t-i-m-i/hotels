@@ -19,6 +19,7 @@ export function BookingListItem({
   return (
     <Pressable
       // Not <Link asChild>: Slot rejects array styles, and flattening breaks Unistyles.
+      // see: https://unistyl.es/v3/guides/merging-styles
       onPress={() =>
         router.push({
           pathname: "/booking/[bookingId]",
