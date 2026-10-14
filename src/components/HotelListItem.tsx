@@ -3,9 +3,9 @@ import { formatDistance } from "@/utils/geo";
 import { Link } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import FavoriteButton from "./FavoriteButton";
+import { FavoriteButton } from "./FavoriteButton";
 
-export default function HotelListItem({ hotel }: { hotel: Hotel }) {
+export function HotelListItem({ hotel }: { hotel: Hotel }) {
   return (
     <Link
       href={{ pathname: "/hotel/[hotelId]", params: { hotelId: hotel.id } }}

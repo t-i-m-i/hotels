@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { SymbolView } from "expo-symbols";
 import { GestureResponderEvent, Pressable } from "react-native";
 
-export default function FavoriteButton({ hotel }: { hotel: Hotel }) {
+export function FavoriteButton({ hotel }: { hotel: Hotel }) {
   const isFavorite = useAppSelector((state) =>
     selectIsFavorite(state, hotel.id),
   );

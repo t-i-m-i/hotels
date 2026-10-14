@@ -1,5 +1,5 @@
 import { Hotel } from "@/api/hotels";
-import HotelListItem from "@/components/HotelListItem";
+import { HotelListItem } from "@/components/HotelListItem";
 import { useAppSelector } from "@/store/hooks";
 import { useCallback } from "react";
 import { Text, StyleSheet, FlatList } from "react-native";

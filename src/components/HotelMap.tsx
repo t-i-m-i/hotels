@@ -16,7 +16,7 @@ import { Bounds, boundsForHotels, hotelToLngLat } from "@/utils/geo";
 const MIN_ZOOM = 3;
 const MAX_ZOOM = 18;
 
-export default function HotelMap({
+export function HotelMap({
   hotels,
   selectedHotelId,
   onBoundsChange, // NEW — omit on the detail screen to keep single-hotel behaviour

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useHotelsInBounds } from "@/api/hooks/useHotels";
-import HotelMap from "@/components/HotelMap";
+import { HotelMap } from "@/components/HotelMap";
 import { DEFAULT_MAP_BOUNDS } from "@/constants/map";
 import type { Bounds } from "@/utils/geo";
 

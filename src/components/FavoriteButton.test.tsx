@@ -1,5 +1,5 @@
 import { render, fireEvent } from "@testing-library/react-native";
-import FavoriteButton from "./FavoriteButton";
+import { FavoriteButton } from "./FavoriteButton";
 import { Hotel } from "@/api/hotels";
 import { favoritesReducer } from "@/store/favoritesSlice";
 import { configureStore } from "@reduxjs/toolkit";

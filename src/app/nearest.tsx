@@ -1,5 +1,5 @@
 import { useNearestHotels } from "@/api/hooks/useHotels";
-import HotelList from "@/components/HotelList";
+import { HotelList } from "@/components/HotelList";
 import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import { themeStyles } from "@/styles/themeStyles";
 import { Stack } from "expo-router";

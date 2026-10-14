@@ -1,6 +1,6 @@
 import { useMyBookings } from "@/api/hooks/useBookings";
 import { BookingListItem } from "@/components/BookingListItem";
-import LoginPrompt from "@/components/LoginPrompt";
+import { LoginPrompt } from "@/components/LoginPrompt";
 import { useSessionUser } from "@/hooks/useSessionUser";
 import { themeStyles } from "@/styles/themeStyles";
 import { useLocalSearchParams } from "expo-router";

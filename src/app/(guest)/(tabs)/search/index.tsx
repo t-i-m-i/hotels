@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, Text, StyleSheet } from "react-native";
 import { useHotels } from "@/api/hooks/useHotels";
-import HotelList from "@/components/HotelList";
+import { HotelList } from "@/components/HotelList";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export function useDebouncedValue<T>(value: T, delay: number) {

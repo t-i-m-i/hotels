@@ -1,5 +1,5 @@
-import AccountActions from "@/components/AccountActions";
-import LoginPrompt from "@/components/LoginPrompt";
+import { AccountActions } from "@/components/AccountActions";
+import { LoginPrompt } from "@/components/LoginPrompt";
 import { useSessionUser } from "@/hooks/useSessionUser";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

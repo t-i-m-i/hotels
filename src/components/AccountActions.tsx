@@ -31,7 +31,7 @@ const ROLE_LABELS: Record<string, string> = {
  * role's account tab needs, regardless of what else that tab shows. Shared
  * so guest/host/admin don't each reimplement the delete confirmation flow.
  */
-export default function AccountActions({ user }: { user: SessionUser }) {
+export function AccountActions({ user }: { user: SessionUser }) {
   const router = useRouter();
   const { theme } = useUnistyles();
   const { activeRole, setActiveRole } = useActiveRole();

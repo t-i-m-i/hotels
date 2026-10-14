@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 
-export default function CarouselItem({
+export function CarouselItem({
   imageUri,
   alt,
   index,

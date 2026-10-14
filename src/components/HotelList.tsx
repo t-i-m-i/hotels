@@ -3,7 +3,7 @@ import { ReactElement, useCallback } from "react";
 import { ActivityIndicator, FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
-import HotelListItem from "./HotelListItem";
+import { HotelListItem } from "./HotelListItem";
 
 type HotelListPaginatedProps = {
   hotels: Hotel[] | undefined;
@@ -16,7 +16,7 @@ type HotelListPaginatedProps = {
   safeAreaEdges?: ("top" | "bottom" | "left" | "right")[];
 };
 
-export default function HotelList({
+export function HotelList({
   hotels,
   isLoading,
   isError,

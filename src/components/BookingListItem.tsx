@@ -33,7 +33,7 @@ export function BookingListItem({
       ]}
     >
       {newBookingId === bookingDetails.id && (
-        <Text style={styles.bookingConfirmedText}>Booking confirmed!</Text>
+        <Text style={styles.bookingMadeText}>Booking made successfully!</Text>
       )}
       <Text style={[styles.hotelName, isPast && styles.textPast]}>
         {bookingDetails.hotel.name}
@@ -41,6 +41,7 @@ export function BookingListItem({
       <Text style={[styles.dates, isPast && styles.textPast]}>
         {bookingDetails.checkIn} – {bookingDetails.checkOut}
       </Text>
+      <Text style={styles.status}>{bookingDetails.status}</Text>
     </Pressable>
   );
 }
@@ -75,8 +76,14 @@ const styles = StyleSheet.create((theme) => ({
   textPast: {
     color: theme.colors.textMuted,
   },
-  bookingConfirmedText: {
+  bookingMadeText: {
     color: theme.colors.accent,
     fontWeight: "600",
+  },
+  status: {
+    fontSize: 12,
+    fontWeight: "600",
+    textTransform: "capitalize",
+    color: theme.colors.accent,
   },
 }));

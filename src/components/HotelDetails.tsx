@@ -3,9 +3,9 @@ import { SelectedRange } from "@/hooks/useDateRangeSelection";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Pressable, Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import ImagesSlider from "./ImagesSlider";
+import { ImagesSlider } from "./ImagesSlider";
 
-export default function HotelDetails({
+export function HotelDetails({
   hotel,
   bottomSheetRef,
   selectedRange,

@@ -1,5 +1,5 @@
 import { Dimensions, View, StyleSheet } from "react-native";
-import CarouselItem from "./CarouselItem";
+import { CarouselItem } from "./CarouselItem";
 import Animated, {
   clamp,
   FadeIn,
@@ -17,7 +17,7 @@ const _itemSize = width * 0.24;
 const _spacing = 12;
 const _itemTotalSize = _itemSize + _spacing;
 
-export default function ImagesSlider({ images }: { images: HotelImage[] }) {
+export function ImagesSlider({ images }: { images: HotelImage[] }) {
   const scrollX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const onScroll = useAnimatedScrollHandler((e) => {

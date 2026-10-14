@@ -1,5 +1,5 @@
 import { useHotels } from "@/api/hooks/useHotels";
-import HotelList from "@/components/HotelList";
+import { HotelList } from "@/components/HotelList";
 import { themeStyles } from "@/styles/themeStyles";
 import { Link } from "expo-router";
 import { Pressable, Text, View } from "react-native";

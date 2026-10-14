@@ -17,9 +17,9 @@ import {
   useCurrentBookingsByHotel,
 } from "@/api/hooks/useBookings";
 import { useHotel, useHotelsInBounds } from "@/api/hooks/useHotels";
-import HotelBookingSheet from "@/components/HotelBookingSheet";
-import HotelDetails from "@/components/HotelDetails";
-import HotelMap from "@/components/HotelMap";
+import { HotelBookingSheet } from "@/components/HotelBookingSheet";
+import { HotelDetails } from "@/components/HotelDetails";
+import { HotelMap } from "@/components/HotelMap";
 import { ErrorText } from "@/components/ui/ErrorText";
 import useDateRangeSelection from "@/hooks/useDateRangeSelection";
 import { useSessionUser } from "@/hooks/useSessionUser";

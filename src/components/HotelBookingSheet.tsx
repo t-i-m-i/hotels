@@ -3,7 +3,7 @@ import { getLocalDateString } from "@/utils/dateRange";
 import { Calendar, DateData } from "react-native-calendars";
 import { MarkedDates } from "react-native-calendars/src/types";
 
-export default function HotelBookingSheet({
+export function HotelBookingSheet({
   bottomSheetRef,
   markedDates,
   onDayPress,

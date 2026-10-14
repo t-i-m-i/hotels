@@ -1,4 +1,4 @@
-import AccountActions from "@/components/AccountActions";
+import { AccountActions } from "@/components/AccountActions";
 import { useSessionUser } from "@/hooks/useSessionUser";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
