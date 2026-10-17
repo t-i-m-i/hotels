@@ -45,7 +45,7 @@ export function useCreateBooking(hotelId: string | undefined) {
 export function useUpdateStatus(hostId: string | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
-    // updateBookingStatus wants 2 arguments - so there is a need for adapter step where the object is split into (id, body)
+    // updateBookingStatus wants 2 arguments - so there is a need for adapter step where the object is split into (id, status)
     mutationFn: ({
       id,
       status,

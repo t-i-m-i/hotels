@@ -1,6 +1,9 @@
 import { authClient } from "@/api/authClient";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { type LoginForm, loginSchema } from "@/schemas/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type Href, useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Alert, Button, TextInput, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -8,21 +11,27 @@ export default function Login() {
   const router = useRouter();
   const { theme } = useUnistyles();
   const { redirectTo } = useLocalSearchParams<{ redirectTo?: string }>();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
   const goToRedirect = () => {
     router.replace((redirectTo as Href) ?? "/(guest)/(tabs)");
   };
 
-  const handleLogin = async () => {
+  const onLogin = handleSubmit(async ({ email, password }) => {
     const { error } = await authClient.signIn.email({ email, password });
     if (error) {
       Alert.alert("Login failed", error.message ?? "Please try again.");
       return;
     }
     goToRedirect();
-  };
+  });
 
   const handleLoginGithub = async () => {
     // Without callbackURL, BetterAuth falls back to baseURL (bare
@@ -43,29 +52,46 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        testID="email-input"
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor={theme.colors.textMuted}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { value, onChange, onBlur } }) => (
+          <TextInput
+            testID="email-input"
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={theme.colors.textMuted}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+          />
+        )}
       />
-      <TextInput
-        testID="password-input"
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor={theme.colors.textMuted}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+      {errors.email && <ErrorText message={errors.email.message!} />}
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { value, onChange, onBlur } }) => (
+          <TextInput
+            testID="password-input"
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={theme.colors.textMuted}
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+          />
+        )}
       />
+      {errors.password && <ErrorText message={errors.password.message!} />}
       <Button
         testID="login-button"
         title="Login"
-        onPress={handleLogin}
+        onPress={onLogin}
+        disabled={isSubmitting}
         color={theme.colors.primary}
       />
       <Button
