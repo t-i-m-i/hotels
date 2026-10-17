@@ -66,6 +66,9 @@ export default function Login() {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
+            // optional password manager support
+            textContentType="username" // ios
+            autoComplete="username" // android
           />
         )}
       />
@@ -83,6 +86,9 @@ export default function Login() {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
+            // optional password manager support
+            textContentType="password" // ios
+            autoComplete="current-password" // android
           />
         )}
       />
@@ -97,6 +103,7 @@ export default function Login() {
       <Button
         title="Continue with GitHub"
         onPress={handleLoginGithub}
+        disabled={isSubmitting}
         color={theme.colors.primary}
       />
     </View>

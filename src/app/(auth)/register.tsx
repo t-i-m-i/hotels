@@ -1,6 +1,9 @@
 import { authClient } from "@/api/authClient";
+import { ErrorText } from "@/components/ui/ErrorText";
+import { type RegisterForm, registerSchema } from "@/schemas/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type Href, useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { Alert, Button, TextInput, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -8,26 +11,32 @@ export default function Register() {
   const router = useRouter();
   const { theme } = useUnistyles();
   const { redirectTo } = useLocalSearchParams<{ redirectTo?: string }>();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: "", email: "", password: "" },
+  });
 
   const goToRedirect = () => {
     router.replace((redirectTo as Href) ?? "/(guest)/(tabs)");
   };
 
-  const handleRegister = async () => {
+  const onRegister = handleSubmit(async ({ name, email, password }) => {
     const { error } = await authClient.signUp.email({
+      name,
       email,
       password,
-      name,
     });
     if (error) {
       Alert.alert("Registration failed", error.message ?? "Please try again.");
       return;
     }
     goToRedirect();
-  };
+  });
 
   const handleRegisterGithub = async () => {
     // Without callbackURL, BetterAuth falls back to baseURL (bare
@@ -48,38 +57,73 @@ export default function Register() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        placeholderTextColor={theme.colors.textMuted}
-        value={name}
-        onChangeText={setName}
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            placeholderTextColor={theme.colors.textMuted}
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            autoCapitalize="none"
+            textContentType="name" // ios
+            autoComplete="name" // android
+          />
+        )}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor={theme.colors.textMuted}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
+      {errors.name && <ErrorText message={errors.name.message!} />}
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={theme.colors.textMuted}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            // optional password manager support
+            textContentType="username" // ios -  iOS pairs a newPassword field with a username field to decide which account to save
+            autoComplete="username" // android
+          />
+        )}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor={theme.colors.textMuted}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+      {errors.email && <ErrorText message={errors.email.message!} />}
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={theme.colors.textMuted}
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            // optional password manager support
+            textContentType="newPassword" // ios
+            autoComplete="new-password" // android
+          />
+        )}
       />
+      {errors.password && <ErrorText message={errors.password.message!} />}
       <Button
         title="Register"
-        onPress={handleRegister}
+        onPress={onRegister}
+        disabled={isSubmitting}
         color={theme.colors.primary}
       />
       <Button
         title="Continue with GitHub"
         onPress={handleRegisterGithub}
+        disabled={isSubmitting}
         color={theme.colors.primary}
       />
     </View>
