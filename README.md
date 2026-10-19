@@ -1,6 +1,7 @@
 # Hotels
 
-A mobile app for discovering hotels, built as a portfolio project to demonstrate mobile app development in **React Native with Expo**.
+A **React Native with Expo** mobile app for discovering and booking hotels,
+<br />backed by a [NestJS REST API](https://github.com/t-i-m-i/hotels-api).
 
 <img width="270" alt="Image" src="https://github.com/user-attachments/assets/1a813f37-b3c2-4fd3-99ee-2f6e8d28b2ae" />
 <img width="270" alt="Image" src="https://github.com/user-attachments/assets/3620e546-a52f-47e1-88fb-33a748cc510d" />
@@ -39,7 +40,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 
 - React Native with Expo
 - Expo Router file-based navigation with role guards [[src/app/_layout.tsx](src/app/_layout.tsx)]
-- Authentication via BetterAuth
+- Authentication via BetterAuth [[src/api/authClient.ts](src/api/authClient.ts)]
 - Tab navigation with native tabs [[src/app/(tabs)/_layout.tsx](<src/app/(tabs)/_layout.tsx>)]
 - Bottom Sheet [[src/app/hotel/[hotelId].tsx](src/app/hotel/[hotelId].tsx)]
 - FlatList backed by TanStack Infinite Query [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
@@ -50,7 +51,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 - E2E happy path testing with Maestro [[.maestro/booking-flow.yaml](.maestro/booking-flow.yaml)]
 - Location [[src/components/HotelList.tsx](src/components/HotelList.tsx)]
 - Geolocation ("find hotels near me") and geospatial queries via
-  PostGIS behind `hotels-api`
+  PostGIS behind `hotels-api` [[src/app/nearest.tsx](src/app/nearest.tsx)]
 - Local notifications [[src/utils/notifications.ts](src/utils/notifications.ts)]
 - Push notifications via Firebase FCM [[src/utils/pushRegistration.ts](src/utils/pushRegistration.ts)]
 - Deep linking [[src/app/_layout.tsx](src/app/_layout.tsx)]
@@ -66,7 +67,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 
 ## Requirements
 
-- **[`hotels-api`](https://github.com/t-i-m-i/hotels-api)** (a sibling repo): a NestJS backend with an OpenAPI-documented REST API, backed by a Postgres database.
+- **[`hotels-api`](https://github.com/t-i-m-i/hotels-api)** (a sibling repo): a NestJS backend with an OpenAPI-documented REST API, backed by a PostgreSQL database.
 
 ## Running it locally
 
@@ -108,7 +109,4 @@ instead of matching on hotel name/dates.
 
 ## About me
 
-Hi, I'm Tymoteusz.
-I'm a full-stack developer working across frontend, backend, and user experience.
-I build native mobile apps, backend APIs, and work with databases.
-I'm looking for an opportunity to keep growing as a software engineer.
+Hi, I'm Tymoteusz. I'm a Fullstack Developer working across frontend, backend, and user experience. I build native mobile apps, backend APIs, and work with databases. I'm looking for an opportunity to keep growing as a Software Engineer - Fullstack Node.js React and/or React Native.
