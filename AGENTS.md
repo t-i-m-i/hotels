@@ -52,4 +52,9 @@ map. See `README.md` for the pitch and feature list.
 - When you finish a non-trivial chunk of work, add a `docs/logs/NNN-*.md`
   entry (what was done, why, anything non-obvious/gotchas) rather than
   editing an old log entry.
-- Commit messages: always a concise one-liner, no multi-paragraph bodies.
+
+## Git Conventions
+
+- Write short, concise commit messages (one line, under 50 characters when possible)
+- Example: `"Add dark mode toggle"`, `"Fix user profile validation"`
+- Never include metadata (no Co-Authored-By, issue references, timestamps)
