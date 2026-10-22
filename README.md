@@ -34,7 +34,7 @@ As of now, it is not production-ready yet, but once it reaches v1.0.0, you will 
 
 <img width="270" alt="Image" src="https://github.com/user-attachments/assets/5d723359-b5e3-46ac-b963-bcac65add468" />
 <img width="270" alt="Image" src="https://github.com/user-attachments/assets/3867efba-175c-4bad-9d2c-bbf2ef6fc2cc" />
-<img width="270" alt="Image" src="https://github.com/user-attachments/assets/871ae328-7bd6-4153-a04d-71da9c462144" />
+<img width="270" alt="Image" src="https://github.com/user-attachments/assets/28b1ac34-a366-4078-9cc4-0f7687112954" />
 
 ## Tech stack
 
