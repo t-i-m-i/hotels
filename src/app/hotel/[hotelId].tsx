@@ -83,6 +83,10 @@ export default function HotelScreen() {
         hotelId: hotel.id,
         checkIn: selectedRange.start,
         checkOut: selectedRange.end,
+        // TODO booking form with these fields is still to be done
+        guestEmail: "test@test.com", // we need valid email on the backend
+        guestFirstName: "John",
+        guestLastName: "Doe",
       },
       {
         onSuccess: (data) => {
@@ -90,7 +94,7 @@ export default function HotelScreen() {
           bottomSheetRef.current?.close();
           scheduleBookingConfirmedNotification(data.id);
           router.push({
-            pathname: "/my-bookings",
+            pathname: "/bookings",
             params: { newBookingId: data.id },
           });
         },

@@ -9,6 +9,7 @@ export type HostHotelBookingsDto =
 export type HostBookingDto = components["schemas"]["HostBookingDto"];
 export type UpdateBookingStatusDto =
   components["schemas"]["UpdateBookingStatusDto"];
+export type BookingStatus = UpdateBookingStatusDto["status"];
 
 function toError(error: unknown, fallbackMessage: string): Error {
   if (error instanceof Error) {
@@ -84,7 +85,7 @@ export async function getByHost(
 }
 
 // TODO refactor API to return BookingDetails instead of Booking for this endpoint
-// TODO guard in API to ensure that the user can only access their own bookings
+// TODO guard in API to ensure that the user can only access their own bookings - remove @AllowAnonymous() as it was WIP
 export async function getBooking(id: string): Promise<BookingDto> {
   const { data, error } = await apiClient.GET("/bookings/{id}", {
     params: { path: { id } },
