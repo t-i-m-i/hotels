@@ -30,7 +30,7 @@ is UI-only gating.
   `router.push` to `/(auth)/login` with `redirectTo` back to this hotel.
   Also no-ops while the session is still `isPending` (hydrating from
   SecureStore) instead of treating that transient state as logged-out.
-- `src/app/(tabs)/my-bookings.tsx`: deliberately did **not** hide the
+- `src/app/(tabs)/bookings.tsx`: deliberately did **not** hide the
   Bookings tab for logged-out users (diverges from the guide's step 5).
   Instead the tab stays visible and renders a "Please login to manage your
   bookings" prompt with Login/Register buttons when there's no session.

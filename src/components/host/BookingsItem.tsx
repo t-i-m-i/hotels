@@ -3,15 +3,16 @@ import { useUpdateStatus } from "@/api/hooks/useBookings";
 import { Button } from "@/components/ui/Button";
 import { ErrorText } from "@/components/ui/ErrorText";
 import { useSessionUser } from "@/hooks/useSessionUser";
-import { BookingPhase, getBookingPhase } from "@/utils/bookingPhase";
+import { isInactiveStatus } from "@/utils/bookingStatus";
+import { isTodayInRange } from "@/utils/dateRange";
 import { Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export function BookingsItem({ booking }: { booking: HostBookingDto }) {
-  const phase = getBookingPhase(booking.checkIn, booking.checkOut);
-  const isPast = phase === BookingPhase.PAST;
-  const isActive = phase === BookingPhase.ACTIVE;
-  const isUpcoming = phase === BookingPhase.UPCOMING;
+  const isInactive = isInactiveStatus(booking.status);
+  const stayingNow =
+    booking.status === "confirmed" &&
+    isTodayInRange(booking.checkIn, booking.checkOut);
 
   // Update booking status
   const user = useSessionUser();
@@ -35,49 +36,40 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
     <View
       style={[
         styles.card,
-        isPast && styles.cardPast,
-        isActive && styles.cardActive,
+        isInactive && styles.cardPast,
+        stayingNow && styles.cardActive,
       ]}
     >
       <View style={styles.header}>
-        <Text style={[styles.guest, isPast && styles.textPast]}>
+        <Text style={[styles.guest, isInactive && styles.textPast]}>
           {booking.user.firstName} {booking.user.lastName}
         </Text>
-        <Text style={[styles.status, isPast && styles.textPast]}>
+        <Text style={[styles.status, isInactive && styles.textPast]}>
           {booking.status.replace("_", " ")}
         </Text>
       </View>
-      <Text style={[styles.dates, isPast && styles.textPast]}>
+      <Text style={[styles.dates, isInactive && styles.textPast]}>
         {booking.checkIn} – {booking.checkOut}
       </Text>
-      {isActive && <Text style={styles.phaseLabel}>Staying now</Text>}
+      {stayingNow && (
+        <Text style={styles.phaseLabel}>Guest is staying now!</Text>
+      )}
       <Text style={styles.id}>{booking.id}</Text>
 
       {updateStatusError && <ErrorText message={updateStatusError.message} />}
 
-      {booking.status === "pending" && (isUpcoming || isActive) && (
-        <>
-          <View style={styles.buttonContainer}>
-            <Button
-              title={
-                isUpdating("confirmed") ? "Updating..." : "Confirm Booking"
-              }
-              onPress={() => handleUpdateStatus("confirmed")}
-              isPending={isUpdatingStatus}
-              fontSize={14}
-            />
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              title={isUpdating("cancelled") ? "Updating..." : "Cancel Booking"}
-              onPress={() => handleUpdateStatus("cancelled")}
-              isPending={isUpdatingStatus}
-              fontSize={14}
-            />
-          </View>
-        </>
+      {booking.allowedStatusChanges.includes("confirmed") && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title={isUpdating("confirmed") ? "Updating..." : "Confirm Booking"}
+            onPress={() => handleUpdateStatus("confirmed")}
+            isPending={isUpdatingStatus}
+            fontSize={14}
+          />
+        </View>
       )}
-      {booking.status === "confirmed" && (isActive || isUpcoming) && (
+
+      {booking.allowedStatusChanges.includes("cancelled") && (
         <View style={styles.buttonContainer}>
           <Button
             title={isUpdating("cancelled") ? "Updating..." : "Cancel Booking"}
@@ -87,8 +79,8 @@ export function BookingsItem({ booking }: { booking: HostBookingDto }) {
           />
         </View>
       )}
-      {/* backend turns confirmed into completed once check_out < today, so all past bookings are completed and can't be set as no_show, as completed is one of the terminal states */}
-      {booking.status === "confirmed" && isActive && (
+
+      {booking.allowedStatusChanges.includes("no_show") && (
         <View style={styles.buttonContainer}>
           <Button
             title={isUpdating("no_show") ? "Updating..." : "Set as No Show"}

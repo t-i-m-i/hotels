@@ -181,7 +181,7 @@ milestone is UI-only gating, not server-side enforcement.
 5. **Gate the Bookings tab** — `src/app/(tabs)/_layout.tsx` currently
    renders all five tabs unconditionally (no existing `isLoggedIn`
    placeholder to wire up). Add a real check via `authClient.useSession()`
-   and hide the `my-bookings` `NativeTabs.Trigger` when logged out.
+   and hide the `bookings` `NativeTabs.Trigger` when logged out.
 
 6. **Gate the Book button** — `src/app/hotel/[hotelId].tsx`'s
    `handleBooking()` currently calls `book(...)` unconditionally. Check

@@ -31,7 +31,7 @@ map. See `README.md` for the pitch and feature list.
 ## Structure
 
 - `src/app/` — Expo Router screens. `(tabs)/` is the native tab group
-  (`index.tsx` hotel list, `map.tsx`, `my-bookings.tsx`, `search/`);
+  (`index.tsx` hotel list, `map.tsx`, `bookings.tsx`, `search/`);
   `hotel/[hotelId].tsx` is a detail screen pushed on top of the tabs
   (hides the tab bar, shows a back button) rather than a tab itself.
 - `src/components/` — shared UI, e.g. `HotelMap.tsx` (prop-driven, used by

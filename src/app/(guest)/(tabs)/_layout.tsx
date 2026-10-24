@@ -13,7 +13,7 @@ export default function RootLayout() {
           md={{ default: "explore", selected: "explore" }}
         />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="my-bookings">
+      <NativeTabs.Trigger name="bookings">
         <NativeTabs.Trigger.Label>Bookings</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
           sf={{ default: "ticket", selected: "ticket.fill" }}

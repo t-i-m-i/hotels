@@ -1,5 +1,6 @@
 import type { BookingDetails } from "@/api/bookings";
-import { BookingPhase, getBookingPhase } from "@/utils/bookingPhase";
+import { isInactiveStatus } from "@/utils/bookingStatus";
+import { isTodayInRange } from "@/utils/dateRange";
 import { useRouter } from "expo-router";
 import { Pressable, Text } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -12,9 +13,11 @@ export function BookingListItem({
   newBookingId: string | undefined;
 }) {
   const router = useRouter();
-  const isPast =
-    getBookingPhase(bookingDetails.checkIn, bookingDetails.checkOut) ===
-    BookingPhase.PAST;
+
+  const isInactive = isInactiveStatus(bookingDetails.status);
+  const stayingNow =
+    bookingDetails.status === "confirmed" &&
+    isTodayInRange(bookingDetails.checkIn, bookingDetails.checkOut);
 
   return (
     <Pressable
@@ -28,19 +31,20 @@ export function BookingListItem({
       }
       style={[
         styles.card,
-        isPast && styles.cardPast,
+        isInactive && styles.cardPast,
         newBookingId === bookingDetails.id && styles.cardNew,
       ]}
     >
       {newBookingId === bookingDetails.id && (
         <Text style={styles.bookingMadeText}>Booking made successfully!</Text>
       )}
-      <Text style={[styles.hotelName, isPast && styles.textPast]}>
+      <Text style={[styles.hotelName, isInactive && styles.textPast]}>
         {bookingDetails.hotel.name}
       </Text>
-      <Text style={[styles.dates, isPast && styles.textPast]}>
+      <Text style={[styles.dates, isInactive && styles.textPast]}>
         {bookingDetails.checkIn} – {bookingDetails.checkOut}
       </Text>
+      {stayingNow && <Text style={styles.status}>Staying now!</Text>}
       <Text style={styles.status}>{bookingDetails.status}</Text>
     </Pressable>
   );

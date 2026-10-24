@@ -31,3 +31,9 @@ export function getDatesInRange(startDate: string, endDate: string): string[] {
 
   return dates;
 }
+
+// compare strings in YYYY-MM-DD format against local day string - no new Date(...) which would parse as UTC and can shift the day
+export function isTodayInRange(checkIn: string, checkOut: string): boolean {
+  const today = getLocalDateString();
+  return today >= checkIn && today <= checkOut;
+}

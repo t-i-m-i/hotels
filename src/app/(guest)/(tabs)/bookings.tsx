@@ -8,7 +8,7 @@ import { ActivityIndicator, FlatList, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
-export default function MyBookings() {
+export default function BookingsScreen() {
   const user = useSessionUser();
   const { data: bookings, isLoading, isError } = useMyBookings(user?.id);
   const { newBookingId } = useLocalSearchParams<{ newBookingId?: string }>();
@@ -17,7 +17,7 @@ export default function MyBookings() {
     return (
       <LoginPrompt
         message="Please login to manage your bookings"
-        redirectTo="/(guest)/(tabs)/my-bookings"
+        redirectTo="/(guest)/(tabs)/bookings"
       />
     );
   }
