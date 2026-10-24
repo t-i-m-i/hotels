@@ -57,4 +57,3 @@ map. See `README.md` for the pitch and feature list.
 
 - Write short, concise commit messages (one line, under 50 characters when possible)
 - Example: `"Add dark mode toggle"`, `"Fix user profile validation"`
-- Never include metadata (no Co-Authored-By, issue references, timestamps)
