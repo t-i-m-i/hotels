@@ -11,8 +11,11 @@
 #     password hash matches what it expects at login):
 #       curl -X POST http://localhost:3000/api/auth/sign-up/email \
 #         -H "Content-Type: application/json" \
-#         -d '{"email":"e2e@hotels.test","password":"e2e-test-pw!1","name":"E2E Test User"}'
-#     Update E2E_EMAIL/E2E_PASSWORD below if you seed different credentials.
+#         -d '{"email":"<E2E_USER_EMAIL>","password":"<E2E_USER_PASSWORD>","name":"E2E Test User"}'
+#     The credentials live in .env.local (E2E_USER_EMAIL / E2E_USER_PASSWORD,
+#     see .env.example), not in this tracked file. `bun run test:e2e` (.maestro/run.ts) passes
+#     them in as E2E_EMAIL / E2E_PASSWORD via `maestro test -e`; running
+#     `maestro test` directly needs the same `-e` flags.
 #   - A dev build installed on a booted simulator (`bun run ios` once), then
 #     Metro serving the bundle with the e2e flag baked in:
 #     `EXPO_PUBLIC_E2E_TEST_MODE=true bun start` on :8081. Without that env
@@ -29,8 +32,6 @@ name: Book a hotel end-to-end
 env:
   SEARCH: "Barcelona"
   API_URL: "http://localhost:3000"
-  E2E_EMAIL: "e2e@hotels.test"
-  E2E_PASSWORD: "e2e-test-pw!1"
 ---
 # No `clearState`: on iOS that's implemented as a full uninstall/reinstall
 # (see docs/logs/004-testing-setup.md), which wipes expo-dev-menu's "seen

@@ -77,7 +77,7 @@
     "format:check": "prettier --check .",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:e2e": "maestro test .maestro",
+    "test:e2e": "bun .maestro/run.ts",
     "generate:api-types": "openapi-typescript ../hotels-api/docs/openapi.json -o src/api/generated/schema.d.ts"
   },
   "jest": {

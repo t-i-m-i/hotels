@@ -87,6 +87,8 @@ bun run start
 `test:e2e` needs, in order:
 
 - `hotels-api` running locally
+- `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` in `.env.local` (see `.env.example`); `.maestro/run.ts` loads that file and
+  hands them to Maestro with `-e`. The account is seeded once, curl in `.maestro/booking-flow.yaml`.
 - a dev build installed on a booted simulator (`bun run ios`, once), and Maestro + idb-companion installed - see
   `docs/logs/004-testing-setup.md` for the full setup.
 
